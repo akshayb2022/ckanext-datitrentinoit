@@ -1,4 +1,8 @@
 {% ckan_extends %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set faq_route = 'datitrentinoit.faq' if ckan_29_or_higher else 'faq' %}
+
+
 
 {# -- Customize title / description -- #}
 {% block header_logo %}
@@ -20,8 +24,8 @@
 	("organizations_index", _("Organizations")),
 	("group_index", _("Categories")),
 	("about", _("About")),
-	('ckanext_showcase_index', _('Showcases')),
-	("faq", _('FAQ')),
+	('showcase_index', _('Showcases')),
+	(faq_route, _('FAQ'))
 	) }}
 {% endblock %}
 

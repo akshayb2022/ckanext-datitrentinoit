@@ -31,7 +31,7 @@ def recent_updates(n):
 
     try:
         search_results = logic.get_action('package_search')(context, data_dict)
-    except search.SearchError, e:
+    except search.SearchError as e:
         log.error('Error searching for recently updated datasets')
         log.error(e)
         search_results = {}

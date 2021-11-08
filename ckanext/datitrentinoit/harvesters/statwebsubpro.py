@@ -1,7 +1,7 @@
 
 import logging
 import requests
-import urllib2
+import urllib
 
 from ckan.lib.helpers import json
 from ckan.plugins.core import SingletonPlugin
@@ -56,8 +56,8 @@ class StatWebSubProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def create_index(self, url):
         log.info('%s: connecting to %s', self.harvester_name(), url)
-        request = urllib2.Request(url)
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
+        request = urllib.request.Request(url)
+        opener = urllib.build_opener(urllib.HTTPCookieProcessor(), urllib.HTTPRedirectHandler())
 
         response = opener.open(request)
         content = response.read()

@@ -12,20 +12,20 @@
 	    <i class="icon-comment"></i>
 	    {{ _('About {0}').format(g.site_title) }}
 	</a></li>
-	<li><a href="{{ h.url_for(controller='ckanext.datitrentinoit.plugin:DatiTrentinoController', action='faq') }}">
+	<li><a href="{{ h.url_for(controller='datitrentinoit', action='faq') }}">
 	    <i class="icon-question"></i>
 	    {{ _('Frequently Asked Questions') }}
 	</a></li>
 	<li><a href="/revision/list?format=atom"><i class="icon-rss"></i> Atom Feed</a></li>
-	<li><a href="{{ h.url_for(controller='ckanext.datitrentinoit.plugin:DatiTrentinoController', action='acknowledgements') }}">
+	<li><a href="{{ h.url_for(controller='datitrentinoit', action='acknowledgements') }}">
 	    <i class="icon-user"></i>
 	    {{ _('Acknowledgements') }}
 	</a></li>
-	<li><a href="{{ h.url_for(controller='ckanext.datitrentinoit.plugin:DatiTrentinoController', action='legal_notes') }}">
+	<li><a href="{{ h.url_for(controller='datitrentinoit', action='legal_notes') }}">
 	    <i class="icon-legal"></i>
 	    {{ _('Legal notes') }}
 	</a></li>
-	<li><a href="{{ h.url_for(controller='ckanext.datitrentinoit.plugin:DatiTrentinoController', action='privacy') }}">
+	<li><a href="{{ h.url_for(controller='datitrentinoit', action='privacy') }}">
 	    <i class="icon-key"></i>
 	    {{ _('Privacy') }}
 	</a></li>

@@ -3,7 +3,7 @@ import hashlib
 import logging
 import uuid
 
-from pylons import config
+from ckan.plugins.toolkit import config
 
 from ckan import logic
 from ckan import model

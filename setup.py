@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ckanext-datitrentinoit',
-    version = '0.1.1',
+    version = '0.1.2',
     description="CKAN customizations for dati.trentino.it",
     long_description="CKAN customizations for dati.trentino.it",
     author="Tobia Di Pisa",

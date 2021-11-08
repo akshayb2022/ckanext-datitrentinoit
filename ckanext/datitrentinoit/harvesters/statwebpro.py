@@ -1,7 +1,7 @@
 
 import logging
 import requests
-import urllib2
+import urllib
 
 from ckan.lib.helpers import json
 from ckan.plugins.core import SingletonPlugin
@@ -55,8 +55,8 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def create_index(self, url):
         log.info('%s: connecting to %s', self.harvester_name(), url)
-        request = urllib2.Request(url)
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
+        request = urllib.request.Request(url)
+        opener = urllib.build_opener(urllib.HTTPCookieProcessor(), urllib.HTTPRedirectHandler())
 
         response = opener.open(request)
         content = response.read()
@@ -95,7 +95,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
             response = opener.open(request)
             content = response.read()
-        except Exception, e:
+        except Exception as e:
             self._save_object_error('Error getting the StatWebPro record with GUID %s' % identifier, harvest_object)
             return False
 
@@ -110,7 +110,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
         try:
             harvest_object.content = entry.tostring()
             harvest_object.save()
-        except Exception,e:
+        except Exception as e:
             self._save_object_error('Error saving the harvest object for GUID %s [%r]' % \
                                     (identifier, e), harvest_object)
             return False

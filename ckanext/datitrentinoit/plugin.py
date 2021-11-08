@@ -1,4 +1,3 @@
-
 import ckan.plugins as plugins
 import logging
 
@@ -10,7 +9,9 @@ import ckanext.datitrentinoit.helpers as helpers
 
 import ckanext.dcatapit.interfaces as interfaces
 
-from ckan.common import _, ungettext
+from ckan.common import _
+
+from ckanext.datitrentinoit import blueprint
 
 try:
     from ckan.lib.plugins import DefaultTranslation
@@ -22,8 +23,8 @@ log = logging.getLogger(__name__)
 
 static_pages = ['faq', 'acknowledgements', 'legal_notes', 'privacy']
 
-class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
+class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # IConfigurer
     plugins.implements(plugins.IConfigurer)
 
@@ -33,8 +34,8 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
     # ITemplateHelpers
     plugins.implements(plugins.ITemplateHelpers)
 
-    # IRoutes
-    plugins.implements(plugins.IRoutes)
+    # IBluePrint
+    plugins.implements(plugins.IBlueprint)
 
     # IPackageController
     plugins.implements(plugins.IPackageController, inherit=True)
@@ -51,7 +52,7 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     def get_custom_schema(self):
         return [
-              {
+            {
                 'name': 'fields_description',
                 'validator': ['ignore_missing'],
                 'element': 'textarea',
@@ -80,19 +81,23 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
             'domain': config.get('googleanalytics.domain'),
         }
 
-    # Implementation of IRoutes
-    # ------------------------------------------------------------
+    # Implementation of IBluePrint
+    def get_blueprint(self):
+        return blueprint.datitrentinoit
 
-    def before_map(self, routes):
-        controller = 'ckanext.datitrentinoit.plugin:DatiTrentinoController'
-        with routes_mapper.SubMapper(routes, controller=controller) as m:
-            for page_name in static_pages:
-                page_slug = page_name.replace('_', '-')
-                m.connect(page_name, '/' + page_slug, action=page_name)
-        return routes
-
-    def after_map(self, routes):
-        return routes
+    # TODO: Remove IRoutes
+    # # Implementation of IRoutes
+    # # ------------------------------------------------------------
+    #
+    # def before_map(self, routes):
+    #     controller = 'ckanext.datitrentinoit.plugin:DatiTrentinoController'
+    #     with routes_mapper.SubMapper(routes, controller=controller) as m:
+    #         for page_name in static_pages:
+    #             page_slug = page_name.replace('_', '-')
+    #             m.connect(page_name, '/' + page_slug, action=page_name)
+    #     return routes
+    # def after_map(self, routes):
+    #     return routes
 
     # Implementation of ITemplateHelpers
     # ------------------------------------------------------------
@@ -111,15 +116,3 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def _get_ga_site_domain(self):
         return self.ga_conf['domain']
 
-
-class DatiTrentinoController(base.BaseController):
-    """Controller used to add custom pages"""
-
-for page_name in static_pages:
-    def get_action(name):
-        def action(self):
-            return base.render('pages/{0}.html'.format(name))
-        return action
-    action = get_action(page_name)
-    action.__name__ = page_name
-    setattr(DatiTrentinoController, page_name, action)
