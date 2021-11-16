@@ -1,9 +1,9 @@
 
 import logging
 import requests
-import urllib
+import urllib.request as urllib2
 
-from ckan.lib.helpers import json
+import json
 from ckan.plugins.core import SingletonPlugin
 
 from ckanext.datitrentinoit.model.statweb_metadata import StatWebProIndex, StatWebProEntry, StatWebMetadataPro
@@ -55,8 +55,8 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def create_index(self, url):
         log.info('%s: connecting to %s', self.harvester_name(), url)
-        request = urllib.request.Request(url)
-        opener = urllib.build_opener(urllib.HTTPCookieProcessor(), urllib.HTTPRedirectHandler())
+        request = urllib2.Request(url)
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
 
         response = opener.open(request)
         content = response.read()
@@ -89,7 +89,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
         log.info('Retrieving StatWebPro metadata from %s', url)
 
         content = None;
-        
+
         try:
             request = urllib2.Request(url)
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
@@ -162,4 +162,4 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 #                'last_modified': modified,
             }
             package_dict['resources'].append(res_dict_csv)
-            
+

@@ -3,7 +3,7 @@ import hashlib
 import logging
 import uuid
 
-from ckan.plugins.toolkit import config
+from ckan.lib.base import config
 
 from ckan import logic
 from ckan import model
@@ -18,7 +18,7 @@ from ckanext.harvest.model import HarvestObject
 from ckanext.harvest.model import HarvestObjectExtra as HOExtra
 
 from ckan.lib.search.index import PackageSearchIndex
-from ckan.lib.helpers import json
+import json
 from ckan.lib.navl.validators import not_empty
 
 log = logging.getLogger(__name__)

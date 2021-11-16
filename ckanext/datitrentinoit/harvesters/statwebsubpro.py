@@ -3,7 +3,7 @@ import logging
 import requests
 import urllib
 
-from ckan.lib.helpers import json
+import json
 from ckan.plugins.core import SingletonPlugin
 
 from ckanext.datitrentinoit.model.statweb_metadata import StatWebSubProIndex, StatWebMetadataSubPro, SubProMetadata
