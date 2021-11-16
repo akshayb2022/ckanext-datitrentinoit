@@ -4,14 +4,13 @@ import logging
 import ckan.lib.base as base
 import ckan.plugins.toolkit as plugins_toolkit
 import routes.mapper as routes_mapper
+from flask import Blueprint
 
 import ckanext.datitrentinoit.helpers as helpers
 
 import ckanext.dcatapit.interfaces as interfaces
 
 from ckan.common import _
-
-from ckanext.datitrentinoit import blueprint
 
 try:
     from ckan.lib.plugins import DefaultTranslation
@@ -83,7 +82,21 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     # Implementation of IBluePrint
     def get_blueprint(self):
-        return blueprint.datitrentinoit
+        datitrentinoit = Blueprint('datitrentinoit', __name__)
+        for page_name in static_pages:
+            def get_action(name):
+                def action():
+                    return base.render('pages/{0}.html'.format(name))
+
+                return action
+
+            action = get_action(page_name)
+            action.__name__ = page_name
+
+            page_slug = page_name.replace('_', '-')
+            #             m.connect(page_name, '/' + page_slug, action=page_name)
+            datitrentinoit.add_url_rule('/' + page_slug, page_name, view_func=action)
+        return datitrentinoit
 
     # TODO: Remove IRoutes
     # # Implementation of IRoutes

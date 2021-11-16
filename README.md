@@ -11,7 +11,6 @@ Available plugins in this extension:
 - ``datitrentinoit``: Theme customization
 - ``statwebpro_harvester``: harvests metadata at level "**pro**" from services exposed by http://www.statweb.provincia.tn.it/.
 - ``statwebsubpro_harvester``: harvests metadata at level "**subpro**" from services exposed by http://www.statweb.provincia.tn.it/.
-- ``csw_tn_harvester``: harvests CSW metadata bypassing the *GetRecordById* validation: the ``gmd:MD_Metadata`` element returned by the service http://www.territorio.provincia.tn.it/geoportlet/srv/eng/csw is not included in an element ``csw:GetRecordByIdResponse``.
 
 ## Requirements
 
@@ -34,7 +33,7 @@ This extension requires the following extensions: ``ckanext-harvester``, ``ckane
     
     `pip install -e .`
 
-4. Add ``datitrentinoit``, ``statwebpro_harvester``, ``statwebsubpro_harvester`` and ``csw_tn_harvester`` to the ``ckan.plugins`` setting in your CKAN config file (by default the config file is located at ``/etc/ckan/default/production.ini``).
+4. Add ``datitrentinoit``, ``statwebpro_harvester`` and ``statwebsubpro_harvester``  to the ``ckan.plugins`` setting in your CKAN config file (by default the config file is located at ``/etc/ckan/default/production.ini``).
 
 5. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
 
