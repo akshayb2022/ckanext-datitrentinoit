@@ -69,7 +69,7 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def update_config(self, config):
         plugins_toolkit.add_public_directory(config, 'public')
         plugins_toolkit.add_template_directory(config, 'templates')
-        plugins_toolkit.add_resource('fanstatic', 'ckanext-datitrentinoit')
+        plugins_toolkit.add_resource('assets', 'datitrentinoit')
 
     # Implementation of IConfigurable
     # ------------------------------------------------------------
@@ -98,29 +98,12 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
             datitrentinoit.add_url_rule('/' + page_slug, page_name, view_func=action)
         return datitrentinoit
 
-    # TODO: Remove IRoutes
-    # # Implementation of IRoutes
-    # # ------------------------------------------------------------
-    #
-    # def before_map(self, routes):
-    #     controller = 'ckanext.datitrentinoit.plugin:DatiTrentinoController'
-    #     with routes_mapper.SubMapper(routes, controller=controller) as m:
-    #         for page_name in static_pages:
-    #             page_slug = page_name.replace('_', '-')
-    #             m.connect(page_name, '/' + page_slug, action=page_name)
-    #     return routes
-    # def after_map(self, routes):
-    #     return routes
-
     # Implementation of ITemplateHelpers
-    # ------------------------------------------------------------
-
     def get_helpers(self):
         return {
             'dti_ga_site_id': self._get_ga_site_id,
             'dti_ga_site_domain': self._get_ga_site_domain,
             'dti_recent_updates': helpers.recent_updates,
-            'hacked_current_url': helpers.hacked_current_url,
         }
 
     def _get_ga_site_id(self):

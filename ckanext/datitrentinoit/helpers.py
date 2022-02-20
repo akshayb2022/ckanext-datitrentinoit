@@ -20,7 +20,7 @@ def recent_updates(n):
     #
     # Return a list of the n most recently updated datasets.
     #
-    log.debug('::::: Retrrieving latest datasets: %r' % n)
+    log.debug('::::: Retrieving latest datasets: %r' % n)
     context = {'model': model,
                'session': model.Session,
                'user': p.toolkit.c.user or p.toolkit.c.author}
@@ -50,25 +50,4 @@ def recent_updates(n):
                 item[result.field] = result.text
 
     return search_results.get('results', [])
-
-# this is a hack against ckan-2.4 (versions before 2.4.7) and ckan-2.5 before ckan-2.5.6
-# Early 2.4/2.5 versions don't have helpers.current_url() and rely
-# on unescaped CKAN_CURRENT_URL env var in request. This can cause 
-# invalid redirection url in language selector.
-# Details:
-#  * 2.4.0: https://github.com/ckan/ckan/blob/ckan-2.4.0/ckan/lib/helpers.py#L277-L280
-#  * 2.4.9: https://github.com/ckan/ckan/blob/ckan-2.4.9/ckan/lib/helpers.py#L305-L313
-#
-# fix in 
-#        2.4: https://github.com/ckan/ckan/commit/109d47c1fe852085eb9bf3ba8e34d6bc6e57e3b1
-#        2.5: https://github.com/ckan/ckan/commit/44a82d732e8be97ac2df03c11b2659ff1a4d6e30
-#
-# Relevant issues:
-# https://github.com/geosolutions-it/ckanext-provbz/issues/37
-# https://github.com/geosolutions-it/ckanext-provbz/issues/20#issuecomment-366279774
-def hacked_current_url():
-    try:
-        return h.current_url()
-    except AttributeError:
-        return urllib.unquote(request.environ['CKAN_CURRENT_URL'])
 

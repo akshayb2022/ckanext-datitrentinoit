@@ -1,4 +1,0 @@
-datitrentinoit:
-  output: ckanext-datitrentinoit
-  contents:
-    - styles/datitrentinoit.css

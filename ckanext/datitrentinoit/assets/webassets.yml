@@ -1,0 +1,12 @@
+datitrentinoit-css:
+  contents:
+    - styles/datitrentinoit.css
+  output: datitrentinoit/%(version)s_datitrentinoit.css
+  filters: cssrewrite
+
+datitrentinoit-homepage-js:
+  contents:
+    - scripts/homepage-feed.js
+    - scripts/homepage-slider.js
+  filters: rjsmin
+  output: datitrentinoit/%(version)s_homepage.js

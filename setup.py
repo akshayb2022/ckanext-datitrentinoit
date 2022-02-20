@@ -10,12 +10,12 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ckanext-datitrentinoit',
-    version = '0.1.2',
+    version = '0.2.0',
     description="CKAN customizations for dati.trentino.it",
     long_description="CKAN customizations for dati.trentino.it",
-    author="Tobia Di Pisa",
-    author_email="tobia.dipisa@geo-solutions.it",
-    url='http://dati.trentino.it',
+    author="GeoSolutions",
+    author_email="info@geosolutionsgroup.com",
+    url='https://github.com/geosolutions-it/ckanext-datitrentinoit',
     license='AGPL',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -30,8 +30,7 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
     ],
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     namespace_packages=['ckanext', 'ckanext.datitrentinoit'],
@@ -49,7 +48,6 @@ setup(
         datitrentinoit = ckanext.datitrentinoit.plugin:DatiTrentinoPlugin
         statwebpro_harvester=ckanext.datitrentinoit.harvesters.statwebpro:StatWebProHarvester
         statwebsubpro_harvester=ckanext.datitrentinoit.harvesters.statwebsubpro:StatWebSubProHarvester
-        csw_tn_harvester=ckanext.datitrentinoit.harvesters.csw_tn:CSWTNHarvester
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
