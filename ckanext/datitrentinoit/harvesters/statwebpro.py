@@ -1,14 +1,14 @@
 
 import logging
-import requests
-import urllib.request as urllib2
-
 import json
+import requests
+import urllib.request as r
+from urllib.parse import urlparse, urlunparse
+
 from ckan.plugins.core import SingletonPlugin
 
 from ckanext.datitrentinoit.model.statweb_metadata import StatWebProIndex, StatWebProEntry, StatWebMetadataPro
 import ckanext.datitrentinoit.model.mapping as mapping
-
 from ckanext.datitrentinoit.harvesters.statwebbase import StatWebBaseHarvester
 
 log = logging.getLogger(__name__)
@@ -55,16 +55,11 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def create_index(self, url):
         log.info('%s: connecting to %s', self.harvester_name(), url)
-        request = urllib2.Request(url)
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
-
-        response = opener.open(request)
-        content = response.read()
-
+        content = r.urlopen(url).read().decode()
         return StatWebProIndex(content)
 
     def create_package_dict(self, guid, content):
-        swpentry = StatWebProEntry(str=content)
+        swpentry = StatWebProEntry(txt=content)
         metadata = StatWebMetadataPro(obj=swpentry.get_metadata())
         orig_id = swpentry.get_id()
         package_dict = mapping.create_pro_package_dict(guid, orig_id, metadata, self.source_config)
@@ -82,19 +77,17 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
         log = logging.getLogger(__name__ + '.fetch')
         log.debug('StatWebPro fetch_stage for object: %s', harvest_object.id)
 
-        entry = StatWebProEntry(str=harvest_object.content)
+        entry = StatWebProEntry(txt=harvest_object.content)
         url = entry.get_url()
+        # rebuild item url, replacing scheme and netloc (workaround for bad data)
+        url = reroute_url(url, harvest_object.job.source.url)
+
         identifier = harvest_object.guid
 
         log.info('Retrieving StatWebPro metadata from %s', url)
 
-        content = None;
-
         try:
-            request = urllib2.Request(url)
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(), urllib2.HTTPRedirectHandler())
-            response = opener.open(request)
-            content = response.read()
+            content = r.urlopen(url).read().decode()
         except Exception as e:
             self._save_object_error('Error getting the StatWebPro record with GUID %s' % identifier, harvest_object)
             return False
@@ -103,7 +96,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             self._save_object_error('Empty record for GUID %s' % identifier, harvest_object)
             return False
 
-        metadata = StatWebMetadataPro(str=content)
+        metadata = StatWebMetadataPro(txt=content)
         entry.set_metadata(metadata.get_obj())
 
         # Update the harvest_object content, adding the metadata
@@ -111,14 +104,13 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             harvest_object.content = entry.tostring()
             harvest_object.save()
         except Exception as e:
-            self._save_object_error('Error saving the harvest object for GUID %s [%r]' % \
-                                    (identifier, e), harvest_object)
+            self._save_object_error(f'Error saving the harvest object for GUID {identifier} [{e}]',
+                                    harvest_object)
             return False
 
         return True
 
-
-    def attach_resources(self, metadata, package_dict):
+    def attach_resources(self, metadata, package_dict, harvest_object):
 
         for resource_key in ["Indicatore", "TabNumeratore", "TabDenominatore"]:
             json_resource_url = metadata.get(resource_key)
@@ -127,6 +119,9 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
             log.debug('StatWebPro: loading resource %s', resource_key)
 
+            # rebuild item url, replacing scheme and netloc (workaround for bad data)
+            json_resource_url = reroute_url(json_resource_url, harvest_object.job.source.url)
+
             rdata = requests.get(json_resource_url)
             if not rdata.ok:
                 log.info('StatWebPro error loading %s for guid %s', json_resource_url, harvest_object.guid)
@@ -134,7 +129,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             else:
                 log.debug('StatWebPro: loaded resource %s', resource_key)
 
-            res_title = rdata.json().keys()[0]
+            res_title = list(rdata.json().keys())[0]
 
             res_dict_json = {
                 'name': res_title,
@@ -162,4 +157,13 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 #                'last_modified': modified,
             }
             package_dict['resources'].append(res_dict_csv)
+
+
+def reroute_url(original_url, destination_url):
+    # rebuild item url, replacing scheme and netloc (workaround for bad data)
+    destination_parsed = urlparse(destination_url)
+    original_parsed = urlparse(original_url)
+    original_parsed = original_parsed._replace(scheme=destination_parsed.scheme)
+    original_parsed = original_parsed._replace(netloc=destination_parsed.netloc)
+    return urlunparse(original_parsed)
 

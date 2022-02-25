@@ -88,8 +88,10 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
 
         try:
             index = self.create_index(url)
+            log.debug(f'Index created for {self.harvester_name()}')
         except Exception as e:
             self._save_gather_error('Error harvesting %s: %s' % (self.harvester_name(), e), harvest_job)
+            log.warning(f"Error while creating index: {e}")
             return None
 
 
@@ -257,7 +259,7 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
         if source_dataset.owner_org:
             package_dict['owner_org'] = source_dataset.owner_org
 
-        self.attach_resources(metadata, package_dict)
+        self.attach_resources(metadata, package_dict, harvest_object)
 
         # Create / update the package
 
@@ -272,7 +274,7 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
 
         # The default package schema does not like Upper case tags
         tag_schema = logic.schema.default_tags_schema()
-        tag_schema['name'] = [not_empty, unicode]
+        tag_schema['name'] = [not_empty]
 
         if status == 'new':
             package_schema = logic.schema.default_create_package_schema()
@@ -281,8 +283,8 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
 
             # We need to explicitly provide a package ID, otherwise ckanext-spatial
             # won't be be able to link the extent to the package.
-            package_dict['id'] = unicode(uuid.uuid4())
-            package_schema['id'] = [unicode]
+            package_dict['id'] = uuid.uuid4().hex
+            package_schema['id'] = []
 
             # Save reference to the package on the object
             harvest_object.package_id = package_dict['id']

@@ -1,7 +1,7 @@
 
 import logging
 import requests
-import urllib
+import urllib.request as r
 
 import json
 from ckan.plugins.core import SingletonPlugin
@@ -56,12 +56,7 @@ class StatWebSubProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def create_index(self, url):
         log.info('%s: connecting to %s', self.harvester_name(), url)
-        request = urllib.request.Request(url)
-        opener = urllib.build_opener(urllib.HTTPCookieProcessor(), urllib.HTTPRedirectHandler())
-
-        response = opener.open(request)
-        content = response.read()
-
+        content = r.urlopen(url).read().decode()
         return StatWebSubProIndex(content)
 
     def create_package_dict(self, guid, content):
@@ -71,7 +66,6 @@ class StatWebSubProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def fetch_stage(self, harvest_object):
         return True
-
 
     def attach_resources(self, metadata, package_dict):
 

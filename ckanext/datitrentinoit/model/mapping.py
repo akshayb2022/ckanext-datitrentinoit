@@ -87,6 +87,7 @@ tipoindicatore_map = {
     'I': 'Incremento anno precedente',
 }
 
+
 def create_base_dict(guid, metadata, config):
     """
     metadata : StatWebMetadata
@@ -102,7 +103,7 @@ def create_base_dict(guid, metadata, config):
 
     start_date = metadata.get_anno_inizio() or '1970'
     if len(start_date) < 4:
-        log.warn("Bad annoinizio found: '%s'", start_date)
+        log.warn(f"Bad annoinizio found: '{start_date}'")
         start_date = '1970'
     created = datetime.datetime(int(start_date), 1, 1)
 
@@ -171,12 +172,13 @@ def create_pro_package_dict(guid, orig_id, metadata, config):
 
     description = create_pro_description(metadata)
 
-    package_dict['id'] = sha1('statistica:' + orig_id).hexdigest(),
+    package_dict['id'] = sha1(f'statistica:{orig_id}'.encode()).hexdigest(),
     package_dict['url'] = 'http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALI/ElencoIndicatori.aspx'
     package_dict['groups'] = groups
     package_dict['notes'] = description
 
     return package_dict
+
 
 def create_subpro_package_dict(guid, metadata, config):
     """
@@ -191,11 +193,11 @@ def create_subpro_package_dict(guid, metadata, config):
 
     package_dict, extras = create_base_dict(guid, metadata, config)
 
-    extras['Fonte'] =  metadata.get_fonte()
-    extras['Tipo di Fenomeno'] =  metadata.get_tipo_fenomeno()
-    extras['Tipo di Indicatore'] =  metadata.get_tipo_indicatore()
-    extras['Settore'] =  metadata.get_settore()
-    extras['Livello Geografico Minimo'] =  metadata.get_min_livello()
+    extras['Fonte'] = metadata.get_fonte()
+    extras['Tipo di Fenomeno'] = metadata.get_tipo_fenomeno()
+    extras['Tipo di Indicatore'] = metadata.get_tipo_indicatore()
+    extras['Settore'] = metadata.get_settore()
+    extras['Livello Geografico Minimo'] = metadata.get_min_livello()
     extras['_harvest_source'] = 'statistica_subpro:' + orig_id
 
     package_dict['extras'] = _extras_as_dict(extras)
@@ -205,12 +207,13 @@ def create_subpro_package_dict(guid, metadata, config):
 
     description = create_subpro_description(metadata)
 
-    package_dict['id'] = sha1('statistica_subpro:' + orig_id).hexdigest(),
+    package_dict['id'] = sha1(f'statistica_subpro:{orig_id}'.encode()).hexdigest(),
     package_dict['url'] = 'http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/'
     package_dict['groups'] = groups
     package_dict['notes'] = description
 
     return package_dict
+
 
 def create_pro_description(metadata):
     d = ''
@@ -222,6 +225,7 @@ def create_pro_description(metadata):
 
     return d
 
+
 def create_subpro_description(metadata):
     d = ''
     d = _add_field(d, 'Settore', metadata.get_settore())
@@ -231,15 +235,17 @@ def create_subpro_description(metadata):
 
     return d
 
+
 def _add_field(base, label, data):
     if data:
         return base + '**' + label + ':** ' + data + '\n\n'
     else:
         return base
 
+
 def _extras_as_dict(extras):
     extras_as_dict = []
-    for key, value in extras.iteritems():
+    for key, value in extras.items():
         if isinstance(value, (list, dict)):
             extras_as_dict.append({'key': key, 'value': json.dumps(value)})
         else:

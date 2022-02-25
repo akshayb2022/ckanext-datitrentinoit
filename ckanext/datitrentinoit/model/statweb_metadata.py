@@ -14,14 +14,15 @@ class StatWebProIndex(object):
 
     entries = {}  # guid: StatWebProEntry
 
-    def __init__(self, str):
-        assert (str is not None), 'Index missing'
-        self.__parse(str)
+    def __init__(self, data):
+        assert (data is not None), 'Index missing'
+        assert (isinstance(data, str)), f'Index should be a string, found {type(data)}'
+        self.__parse(data)
 
-    def __parse(self, str):
+    def __parse(self, data):
         '''Add all the Entries found in the response'''
         
-        index = _safe_decode(str)
+        index = _safe_decode(data)
 
         name, entrylist = index.popitem()
 
@@ -54,13 +55,13 @@ class StatWebProEntry(object):
 
     obj = None
 
-    def __init__(self, str=None, obj=None):
-        assert (str is not None or obj is not None), 'StatWebProEntry: Missing input'
-        assert (str is None or obj is None), 'StatWebProEntry: Must provide a single input'
-        if (obj is not None):
+    def __init__(self, txt=None, obj=None):
+        assert (txt is not None or obj is not None), 'StatWebProEntry: Missing input'
+        assert (txt is None or obj is None), 'StatWebProEntry: Must provide a single input'
+        if obj is not None:
             self.obj = obj
         else:
-            self.obj = _safe_decode(str)
+            self.obj = _safe_decode(txt)
 
     def build_guid(self):
         return 'statistica:' + self.get_id()
@@ -90,17 +91,17 @@ class StatWebMetadata(object):  # abstract
     metadata = None
     stat_type = None
 
-    def __init__(self, stype, str=None, obj=None):
+    def __init__(self, stype, txt=None, obj=None):
         assert (str is not None or obj is not None), 'StatWebMetadata: Missing input'
-        if (obj is not None):
+        if obj is not None:
             self.metadata = obj
         else:
             try:
-                decoded = _safe_decode(str)
-                metadata_list = decoded.values()[0]
+                decoded = _safe_decode(txt)
+                metadata_list = list(decoded.values())[0]
                 self.metadata = metadata_list[0]
             except ValueError as e:
-                log.warn("Error parsing string\n%s", str)
+                log.warn("Error parsing string\n%s", txt)
                 import traceback
                 traceback.print_exc()
                 raise e
@@ -131,7 +132,7 @@ class StatWebMetadata(object):  # abstract
     def get_anno_inizio(self):
         return self.metadata.get('AnnoInizio')
 
-        # un paio di field encodati in key diverse in pro e subpro
+    # un paio di field encodati in key diverse in pro e subpro
     def get_frequenza(self):
         return self.metadata.get('FreqAggiornamento') or self.metadata.get('FrequenzaAggiornamento')
 
@@ -141,8 +142,8 @@ class StatWebMetadata(object):  # abstract
 
 class StatWebMetadataPro(StatWebMetadata):
 
-    def __init__(self, str=None, obj=None):
-        StatWebMetadata.__init__(self, 'stat', str=str, obj=obj)
+    def __init__(self, txt=None, obj=None):
+        StatWebMetadata.__init__(self, 'stat', txt=txt, obj=obj)
 
     def get_area(self):
         return self.metadata.get('Area')
@@ -156,23 +157,23 @@ class StatWebMetadataPro(StatWebMetadata):
 
 class StatWebMetadataSubPro(StatWebMetadata):
 
-    def __init__(self, str=None, obj=None):
-        assert (str is not None or obj is not None), 'StatWebMetadata: Missing input'
-        if (obj is not None):
+    def __init__(self, txt=None, obj=None):
+        assert (txt is not None or obj is not None), 'StatWebMetadata: Missing input'
+        if obj is not None:
             StatWebMetadata.__init__(self, 'SP', obj=obj)
         else:
             try:
-                decoded = _safe_decode(str)
+                decoded = _safe_decode(txt)
                 StatWebMetadata.__init__(self, 'SP', obj=decoded)
 
             except ValueError as e:
-                log.warn("Error parsing string\n%s", str)
+                log.warn("Error parsing string\n%s", txt)
                 import traceback
                 traceback.print_exc()
                 raise e        
 
     def build_guid(self):
-        return 'subpro:' + self.get_id()
+        return f'subpro:{self.get_id()}'
 
     def get_id(self):
         return self.metadata.get('id')
@@ -261,8 +262,18 @@ class SubProMetadata(object):
 
 def _safe_decode(str):
     try:
-        return json.JSONDecoder().decode(str)
-    except ValueError as e:
-        log.warn("Error parsing string, Trying unrestricted parsing...")
-        return json.JSONDecoder(strict=False).decode(str) # this may throw again, but it's ok: we have no other magic solution
+        return json.loads(str)
+    except (ValueError, TypeError) as e:
+        log.warning("Error decoding JSON, Trying unrestricted parsing...")
+        try:
+            return json.JSONDecoder(strict=False).decode(str)  # this may throw again, but we have no other magic solution
+        except (ValueError, TypeError) as e2:
+            log.warning("Error decoding JSON, Trying removing cr/lf...")
+            try:
+                return json.JSONDecoder(strict=False).decode(str.replace('\n', '').replace('\r  ', ''))
+            except (ValueError, TypeError) as e3:
+                log.warning("Error decoding JSON, Trying removing cr/lf...", exc_info=e3)
+                log.warning(str)
+                raise ValueError(f"Error decoding JSON: {e3}")
+
 
