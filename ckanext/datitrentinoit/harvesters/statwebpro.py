@@ -7,9 +7,11 @@ from urllib.parse import urlparse, urlunparse
 
 from ckan.plugins.core import SingletonPlugin
 
-from ckanext.datitrentinoit.model.statweb_metadata import StatWebProIndex, StatWebProEntry, StatWebMetadataPro
+from ckanext.datitrentinoit.model.statweb_metadata import StatWebProIndex, StatWebProEntry, StatWebMetadataPro, \
+    _safe_decode
 import ckanext.datitrentinoit.model.mapping as mapping
 from ckanext.datitrentinoit.harvesters.statwebbase import StatWebBaseHarvester
+from ckanext.dcatapit.model import License
 
 log = logging.getLogger(__name__)
 
@@ -61,8 +63,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
     def create_package_dict(self, guid, content):
         swpentry = StatWebProEntry(txt=content)
         metadata = StatWebMetadataPro(obj=swpentry.get_metadata())
-        orig_id = swpentry.get_id()
-        package_dict = mapping.create_pro_package_dict(guid, orig_id, metadata, self.source_config)
+        package_dict = mapping.create_pro_package_dict(guid, swpentry, metadata, self.source_config)
         return package_dict, metadata
 
     def fetch_stage(self, harvest_object):
@@ -122,14 +123,15 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             # rebuild item url, replacing scheme and netloc (workaround for bad data)
             json_resource_url = reroute_url(json_resource_url, harvest_object.job.source.url)
 
-            rdata = requests.get(json_resource_url)
-            if not rdata.ok:
-                log.info('StatWebPro error loading %s for guid %s', json_resource_url, harvest_object.guid)
-                continue
-            else:
+            try:
+                rdata = r.urlopen(json_resource_url).read().decode()
+                robj = _safe_decode(rdata)
                 log.debug('StatWebPro: loaded resource %s', resource_key)
+            except Exception as e:
+                log.error(f'StatWebPro error in GUID {harvest_object.guid} while loading resource {resource_key} at {json_resource_url}')
+                continue
 
-            res_title = list(rdata.json().keys())[0]
+            res_title = list(robj.keys())[0]
 
             res_dict_json = {
                 'name': res_title,
@@ -139,6 +141,8 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'mimetype': 'application/json',
                 'resource_type': 'api',
 #                'last_modified': modified,
+                'distribution_format': 'JSON',  # dcatapit
+                'license_type': package_dict['license_url'],  # dcatapit
             }
             package_dict['resources'].append(res_dict_json)
 
@@ -155,6 +159,8 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'mimetype': 'text/csv',
                 'resource_type': 'file',
 #                'last_modified': modified,
+                'distribution_format': 'CSV',  # dcatapit
+                'license_type': package_dict['license_url'],  # dcatapit
             }
             package_dict['resources'].append(res_dict_csv)
 

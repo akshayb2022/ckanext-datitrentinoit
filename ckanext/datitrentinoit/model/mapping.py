@@ -3,12 +3,13 @@
 import json
 import logging
 import datetime
-
 import uuid
-
 from hashlib import sha1
 
-from ckanext.datitrentinoit.model.statweb_metadata import StatWebMetadataPro, StatWebMetadataSubPro
+from ckanext.dcatapit.model import License
+
+from ckanext.datitrentinoit.model.statweb_metadata import StatWebMetadataPro, StatWebMetadataSubPro, StatWebProEntry
+
 
 log = logging.getLogger(__name__)
 
@@ -113,6 +114,9 @@ def create_base_dict(guid, metadata, config):
 
     now = dateformat(datetime.datetime.now())
 
+    lic_search = f'%({metadata.get_licenza()})'
+    license = License.q().filter(License.default_name.like(lic_search)).first() or License.get(License.DEFAULT_LICENSE)
+
     package_dict = {
         'title':             metadata.get_descrizione(),
         'groups':            config.get('groups', [{'name': 'statistica'}]),
@@ -122,10 +126,10 @@ def create_base_dict(guid, metadata, config):
         'maintainer_email': 'serv.statistica@provincia.tn.it',
         'metadata_modified': now,
          #'tags':              tags,  # i tag non sembrano essere valorizzati
-        'license_id':       'cc-by',
-        'license':          'Creative Commons Attribution',
-        'license_title':    'Creative Commons Attribution 2.5 it',
-        'license_url':      'http://creativecommons.org/licenses/by/2.5/it/',
+        'license_id':        license.default_name or 'cc-by',
+        'license':           metadata.get_licenza() or 'Creative Commons Attribution',
+        'license_title':     license.default_name or 'Creative Commons Attribution 2.5 it',
+        'license_url':       license.uri or 'http://creativecommons.org/licenses/by/2.5/it/',
         'isopen':            True,
         'resources':         []
     }
@@ -134,7 +138,8 @@ def create_base_dict(guid, metadata, config):
         'holder_name': 'Provincia Autonoma di Trento',
         'holder_ientifier': 'p_TN',
         'identifier': str(uuid.uuid4()),
-        'theme': '[{"subthemes": [], "theme": "OP_DATPRO"}]',
+        #'themes_aggregate': '[{"subthemes": [], "theme": "{tema}"}]'.format(tema=metadata.get_tema() or "OP_DATPRO"),
+        'themes_aggregate': [{"subthemes": [], "theme": metadata.get_tema() or "OP_DATPRO"}],
         'geographical_name': 'ITA_TRT',
         'geographical_geonames_url': 'http://www.geonames.org/3165243',
         'temporal_start': dateformat(created),
@@ -151,7 +156,7 @@ def create_base_dict(guid, metadata, config):
     return package_dict, extras
 
 
-def create_pro_package_dict(guid, orig_id, metadata, config):
+def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMetadataPro, config) -> dict:
     """
     :param StatWebMetadataPro metadata:  The statweb metadata object for PRO level.
     ;param dict config:  The configuration set at harvester level.
@@ -163,19 +168,17 @@ def create_pro_package_dict(guid, orig_id, metadata, config):
 
     extras['Fenomeno'] =  metadata.get_fenomeno()
     extras['Confronti territoriali'] = metadata.get_confronti()
-    extras['_harvest_source'] = 'statistica:' + orig_id
+    extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
 
     package_dict['extras'] = _extras_as_dict(extras)
 
     groupname = cat_map_pro.get((metadata.get_settore() or 'default').lower(), DEFAULT_GROUP_PRO)
     groups = [{'name': groupname}]
 
-    description = create_pro_description(metadata)
-
-    package_dict['id'] = sha1(f'statistica:{orig_id}'.encode()).hexdigest(),
-    package_dict['url'] = 'http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALI/ElencoIndicatori.aspx'
+    package_dict['id'] = sha1(f'statistica:{swpentry.get_id()}'.encode()).hexdigest(),
+    package_dict['url'] = swpentry.get_url()
     package_dict['groups'] = groups
-    package_dict['notes'] = description
+    package_dict['notes'] = create_pro_description(metadata)
 
     return package_dict
 

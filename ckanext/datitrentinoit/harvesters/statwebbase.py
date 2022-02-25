@@ -242,7 +242,7 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
                 log.info('%s document with GUID %s unchanged, skipping...', self.harvester_name(),harvest_object.guid)
                 model.Session.commit()
 
-                return True
+                return "unchanged"
 
 
         # Build the package dict

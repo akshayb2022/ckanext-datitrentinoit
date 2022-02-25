@@ -79,8 +79,7 @@ class StatWebProEntry(object):
         return self.obj['metadata']
 
     def tostring(self):
-        encoder = json.JSONEncoder()
-        return encoder.encode(self.obj)
+        return json.dumps(self.obj)
 
 
 class StatWebMetadata(object):  # abstract
@@ -92,7 +91,7 @@ class StatWebMetadata(object):  # abstract
     stat_type = None
 
     def __init__(self, stype, txt=None, obj=None):
-        assert (str is not None or obj is not None), 'StatWebMetadata: Missing input'
+        assert (txt is not None or obj is not None), 'StatWebMetadata: Missing input'
         if obj is not None:
             self.metadata = obj
         else:
@@ -101,9 +100,7 @@ class StatWebMetadata(object):  # abstract
                 metadata_list = list(decoded.values())[0]
                 self.metadata = metadata_list[0]
             except ValueError as e:
-                log.warn("Error parsing string\n%s", txt)
-                import traceback
-                traceback.print_exc()
+                log.warning(f"Error parsing string\n{txt}", exc_info=e, stack_info=True)
                 raise e
 
         self.stat_type = stype
@@ -138,6 +135,12 @@ class StatWebMetadata(object):  # abstract
 
     def get_um(self):
         return self.metadata.get(u'UnitàMisura') or self.metadata.get('UM')
+
+    def get_tema(self):
+        return self.metadata.get('Tema')
+
+    def get_licenza(self):
+        return self.metadata.get('Licenza')
 
 
 class StatWebMetadataPro(StatWebMetadata):
@@ -260,20 +263,20 @@ class SubProMetadata(object):
         return self.metadata.get('UltimoAggiornamento')
 
 
-def _safe_decode(str):
+def _safe_decode(txt):
     try:
-        return json.loads(str)
+        return json.loads(txt)
     except (ValueError, TypeError) as e:
         log.warning("Error decoding JSON, Trying unrestricted parsing...")
         try:
-            return json.JSONDecoder(strict=False).decode(str)  # this may throw again, but we have no other magic solution
+            return json.JSONDecoder(strict=False).decode(txt)  # this may throw again, but we have no other magic solution
         except (ValueError, TypeError) as e2:
             log.warning("Error decoding JSON, Trying removing cr/lf...")
             try:
-                return json.JSONDecoder(strict=False).decode(str.replace('\n', '').replace('\r  ', ''))
+                return json.JSONDecoder(strict=False).decode(txt.replace('\n', '').replace('\r  ', ''))
             except (ValueError, TypeError) as e3:
                 log.warning("Error decoding JSON, Trying removing cr/lf...", exc_info=e3)
-                log.warning(str)
+                log.warning(txt)
                 raise ValueError(f"Error decoding JSON: {e3}")
 
 
