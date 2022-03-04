@@ -69,7 +69,8 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
     def update_config(self, config):
         plugins_toolkit.add_public_directory(config, 'public')
         plugins_toolkit.add_template_directory(config, 'templates')
-        plugins_toolkit.add_resource('assets', 'datitrentinoit')
+        plugins_toolkit.add_resource('assets', 'datitrentinoit')  # path, webasset name
+        plugins_toolkit.add_public_directory(config, 'assets')  # needed workaround to have webasset find files
 
     # Implementation of IConfigurable
     # ------------------------------------------------------------
