@@ -9,24 +9,24 @@
     <nav class="footer-links span4">
       <ul class="unstyled">
 	<li><a href="{{ h.url_for(controller='home', action='about') }}">
-	    <i class="icon-comment"></i>
+	    <i class="fa fa-comment" aria-hidden="true"></i>
 	    {{ _('About {0}').format(g.site_title) }}
 	</a></li>
 	<li><a href="{{ h.url_for(controller='datitrentinoit', action='faq') }}">
-	    <i class="icon-question"></i>
+	    <i class="fa fa-question" aria-hidden="true"></i>
 	    {{ _('Frequently Asked Questions') }}
 	</a></li>
-	<li><a href="/revision/list?format=atom"><i class="icon-rss"></i> Atom Feed</a></li>
+	<li><a href="/revision/list?format=atom"><i class="fa fa-rss"></i> Atom Feed</a></li>
 	<li><a href="{{ h.url_for(controller='datitrentinoit', action='acknowledgements') }}">
-	    <i class="icon-user"></i>
+	    <i class="fa fa-user" aria-hidden="true"></i>
 	    {{ _('Acknowledgements') }}
 	</a></li>
 	<li><a href="{{ h.url_for(controller='datitrentinoit', action='legal_notes') }}">
-	    <i class="icon-legal"></i>
+	    <i class="fa fa-gavel" aria-hidden="true"></i>
 	    {{ _('Legal notes') }}
 	</a></li>
 	<li><a href="{{ h.url_for(controller='datitrentinoit', action='privacy') }}">
-	    <i class="icon-key"></i>
+	    <i class="fa fa-key" aria-hidden="true"></i>
 	    {{ _('Privacy') }}
 	</a></li>
       </ul>

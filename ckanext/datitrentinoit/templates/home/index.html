@@ -21,10 +21,10 @@
 
 {% asset 'datitrentinoit/datitrentinoit-homepage-js' %}
 
-<div class="homepage-slider-ng">
+<div class="homepage-slider-ng" style="background-image:url(/images/home-slider/meteo_montagne.jpg);">
   <div class="images-wrapper">
 
-    <div class="text-wrapper" style="background-image:url(/images/home-slider/meteo_montagne.jpg)">
+    <div class="text-wrapper">
       <div class="text-container">
         <div><h3>{{ _("What's the weather like, today, in Trentino") }}</h3></div>
         <div class="text-row">
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="text-wrapper" style="background-image:url(/images/home-slider/prodotti_tipici_vigneto.jpg);display:none;">
+    <div class="text-wrapper" style="display:none;">
       <div class="text-container">
         <div><h3>{{ _("PDO, PGI, TSG") }}</h3></div>
         <div class="text-row">
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div class="text-wrapper" style="background-image:url(/images/home-slider/partecipa_neve.jpg);display:none;">
+    <div class="text-wrapper" style="display:none;">
       <div class="text-container">
         <div><h3>{{ _("Partecipate") }}</h3></div>
         <div>
@@ -63,7 +63,7 @@
             {{ _("Do you have an idea that uses the datasets in the catalog?") }}
           </span>
           <span class="text-row">
-            {{ _("Write to <a href=\"mailto:{email}\">{email}</a>").format(email='info&#64;dati.trentino.it')|safe }}
+            {{ _("Write to <a href=\"mailto:{email}\">{email}</a>").format(email='info@dati.trentino.it')|safe }}
           </span>
         </div>
       </div>
@@ -104,7 +104,7 @@
                   <button type="submit"
                           value="{{ _('Search') }}"
                           class="btn btn-primary">
-                          <i class="icon-search"></i> Search
+                          <i class="fa fa-search"></i> Search
                   </button>
                 </span>
           </form>
@@ -124,10 +124,14 @@
     {# ---------- Latest changes block ---------- #}
     <div class="span6"><div class="box">
         <section class="group-list module module-narrow module-shallow" style="height: 300px;">
-          <header class="module-heading" style="position:relative;">
-            <a href="/revision/list?format=atom" class="no-underline" style="position:absolute;top:15px;right:15px;" title="Atom Feed"><i class="icon-rss-sign icon-2x" style="color:#f90;"></i></a>
-            <h3 class="media-heading">{{ _("Latest changes") }}</h3>
+          <header class="module-heading home" style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+          <h3 class="media-heading">{{ _("Latest changes") }}</h3>
             {# <p>{{ _("See which are the most recent changes to datasets.") }}</p> #}
+          </div>
+          <div>
+            <a href="/revision/list?format=atom" class="no-underline" style="font-size:22px;" title="Atom Feed"><i class="fa fa-rss-square" style="color:#f90;"></i></a>
+          </div>
           </header>
 
           <div id="latest-changes" style="padding: 10px; overflow: auto; height: 190px;">

@@ -12,6 +12,8 @@ $(document).ready(function(){
         rollTime: 6000
     };
 
+    var images = ['url(/images/home-slider/meteo_montagne.jpg)', 'url(/images/home-slider/prodotti_tipici_vigneto.jpg)', 'url(/images/home-slider/partecipa_neve.jpg)']
+
     var rollImageInit = function(imgroll) {
         imgroll.children().each(function(idx,item){
             if (idx==0) {
@@ -23,18 +25,22 @@ $(document).ready(function(){
         });
     };
 
-    var rollImageNext = function(imgroll) {
+    var rollImageNext = function(imgroll, slider) {
         var imgidx = imgroll.data('rollimg-idx') || 0,
             imgcount = imgroll.children().length,
             nextidx = (imgidx + 1) % imgcount,
             oldimg = $(imgroll.children()[imgidx]);
+        
 
         imgroll.children().each(function(idx,item){
             if (idx==imgidx) {
-                $(item).show().css('z-index', '2');
+                $(item).hide().css('z-index', '2');
             }
             else if (idx==nextidx) {
                 $(item).show().css('z-index', '1');
+                slider.css({
+                    backgroundImage: images[nextidx]
+                });
             }
             else {
                 $(item).hide();
@@ -51,22 +57,14 @@ $(document).ready(function(){
         imgroll.data('rollimg-idx', nextidx);
     };
 
+    var sliderBackground = $('.homepage-slider-ng');
+
     $('.homepage-slider-ng .images-wrapper').each(function(){
         var imgroll = $(this);
 
-        // imgroll.css({
-        //     'position': 'relative'
-        // });
-        // imgroll.children().css({
-        //     "position": "absolute",
-        //     "top": 0,
-        //     "left": 0,
-        //     "right": 0,
-        // });
-
         rollImageInit(imgroll);
-        setInterval(function(){
-            rollImageNext(imgroll);
+        setInterval(function () {
+            rollImageNext(imgroll, sliderBackground);
         }, conf.rollTime);
     });
 
