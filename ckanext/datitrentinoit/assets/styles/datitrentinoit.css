@@ -550,7 +550,9 @@ input[type="color"]:focus,
 .tag-list-2 a.tag-item:hover {
   background: #888;
 }
-
+.nav-pills > li + li {
+    margin-left: 0;
+}
 .span6 {
   flex: 1;
   margin: 10px;
