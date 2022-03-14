@@ -12,7 +12,8 @@ $(document).ready(function(){
         rollTime: 6000
     };
 
-    var images = ['url(/images/home-slider/meteo_montagne.jpg)', 'url(/images/home-slider/prodotti_tipici_vigneto.jpg)', 'url(/images/home-slider/partecipa_neve.jpg)']
+    var sliderBackground = $('.homepage-slider-ng');
+    var images = sliderBackground.data('backgrounds');
 
     var rollImageInit = function(imgroll) {
         imgroll.children().each(function(idx,item){
@@ -56,8 +57,6 @@ $(document).ready(function(){
         oldimg.fadeOut(conf.fadeTime);
         imgroll.data('rollimg-idx', nextidx);
     };
-
-    var sliderBackground = $('.homepage-slider-ng');
 
     $('.homepage-slider-ng .images-wrapper').each(function(){
         var imgroll = $(this);
