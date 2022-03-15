@@ -81,7 +81,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
         entry = StatWebProEntry(txt=harvest_object.content)
         url = entry.get_url()
         # rebuild item url, replacing scheme and netloc (workaround for bad data)
-        url = reroute_url(url, harvest_object.job.source.url)
+        # url = reroute_url(url, harvest_object.job.source.url)
 
         identifier = harvest_object.guid
 
@@ -97,7 +97,14 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             self._save_object_error('Empty record for GUID %s' % identifier, harvest_object)
             return False
 
-        metadata = StatWebMetadataPro(txt=content)
+        try:
+            metadata = StatWebMetadataPro(txt=content)
+        except Exception as e:
+            self._save_object_error(f'Error parsing StatWebMetadataPro for GUID {identifier} URL {url} [{e}]',
+                                    harvest_object)
+            return False
+
+
         entry.set_metadata(metadata.get_obj())
 
         # Update the harvest_object content, adding the metadata
@@ -121,7 +128,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
             log.debug('StatWebPro: loading resource %s', resource_key)
 
             # rebuild item url, replacing scheme and netloc (workaround for bad data)
-            json_resource_url = reroute_url(json_resource_url, harvest_object.job.source.url)
+            # json_resource_url = reroute_url(json_resource_url, harvest_object.job.source.url)
 
             try:
                 rdata = r.urlopen(json_resource_url).read().decode()
@@ -140,7 +147,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'format': 'json',
                 'mimetype': 'application/json',
                 'resource_type': 'api',
-#                'last_modified': modified,
+                # 'last_modified': modified,
                 'distribution_format': 'JSON',  # dcatapit
                 'license_type': package_dict['license_url'],  # dcatapit
             }
@@ -158,18 +165,18 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'format': 'csv',
                 'mimetype': 'text/csv',
                 'resource_type': 'file',
-#                'last_modified': modified,
+                # 'last_modified': modified,
                 'distribution_format': 'CSV',  # dcatapit
                 'license_type': package_dict['license_url'],  # dcatapit
             }
             package_dict['resources'].append(res_dict_csv)
 
 
-def reroute_url(original_url, destination_url):
-    # rebuild item url, replacing scheme and netloc (workaround for bad data)
-    destination_parsed = urlparse(destination_url)
-    original_parsed = urlparse(original_url)
-    original_parsed = original_parsed._replace(scheme=destination_parsed.scheme)
-    original_parsed = original_parsed._replace(netloc=destination_parsed.netloc)
-    return urlunparse(original_parsed)
+# def reroute_url(original_url, destination_url):
+#     # rebuild item url, replacing scheme and netloc (workaround for bad data)
+#     destination_parsed = urlparse(destination_url)
+#     original_parsed = urlparse(original_url)
+#     original_parsed = original_parsed._replace(scheme=destination_parsed.scheme)
+#     original_parsed = original_parsed._replace(netloc=destination_parsed.netloc)
+#     return urlunparse(original_parsed)
 

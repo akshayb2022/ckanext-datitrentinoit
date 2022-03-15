@@ -205,11 +205,11 @@ class StatWebBaseHarvester(HarvesterBase, SingletonPlugin):
 
             # Check if the document has changed
             m = hashlib.md5()
-            m.update(previous_object.content)
+            m.update(previous_object.content.encode())
             old_md5 = m.hexdigest()
 
             m = hashlib.md5()
-            m.update(harvest_object.content)
+            m.update(harvest_object.content.encode())
             new_md5 = m.hexdigest()
 
             if old_md5 == new_md5:
