@@ -580,10 +580,18 @@ span.btn-group {
   margin: auto;
 }
 
-.container div.row, .row-fluid {
+.container div.row:not(.wrapper), .row-fluid {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+
+header.module-content {
+  margin-bottom: 0;
+}
+
+header.module-content + div.module-content {
+ background-color: #fff;
 }
 
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
