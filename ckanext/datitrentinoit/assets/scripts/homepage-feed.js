@@ -10,7 +10,7 @@ $(function(){
       feed_container.css({
         'padding': '10px',
         'overflow': 'auto',
-        'height': '190px',
+        'height': '210px',
       });
       feed_container.html($(data).find('.dataset-list'));
     });
