@@ -225,6 +225,12 @@ def create_pro_description(metadata):
     d = _add_field(d, 'Algoritmo', metadata.get_algoritmo())
     d = _add_field(d, 'Fenomeno', metadata.get_fenomeno())
     d = _add_field(d, 'Confronti territoriali', metadata.get_confronti())
+    d = _add_field(d, 'Anno Inizio', metadata.get_anno_inizio())
+    d = _add_field(d, 'Anno Fine', metadata.get_anno_fine())
+    d = _add_field(d, 'Note', metadata.get_note())
+    d = _add_field(d, 'Fonte dati Trentino', metadata.get_nsogg_diffon_pro())
+    d = _add_field(d, 'Fonte dati nazionali', metadata.get_nsogg_diffon_naz())
+    d = _add_field(d, 'Fonte dati internazionali', metadata.get_nsogg_diffon_int())
 
     return d
 

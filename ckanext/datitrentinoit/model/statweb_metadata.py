@@ -156,6 +156,24 @@ class StatWebMetadataPro(StatWebMetadata):
 
     def get_confronti(self):
         return self.metadata.get('ConfrontiTerritoriali')
+        
+    def get_anno_inizio(self):
+        return self.metadata.get('AnnoInizio')
+    
+    def get_anno_fine(self):
+        return self.metadata.get('AnnoFine')
+    
+    def get_note(self):
+        return self.metadata.get('Note')
+    
+    def get_nsogg_diffon_pro(self):
+        return self.metadata.get('NsoggDiffonPro')
+
+    def get_nsogg_diffon_naz(self):
+        return self.metadata.get('NsoggDiffonNaz')
+    
+    def get_nsogg_diffon_int(self):
+        return self.metadata.get('NsoggDiffonInt')
 
 
 class StatWebMetadataSubPro(StatWebMetadata):
