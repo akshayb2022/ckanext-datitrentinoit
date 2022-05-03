@@ -116,6 +116,7 @@ def create_base_dict(guid, metadata, config):
 
     lic_search = f'%({metadata.get_licenza()})'
     license = License.q().filter(License.default_name.like(lic_search)).first() or License.get(License.DEFAULT_LICENSE)
+    DEFAULT_IPA = 'p_TN'
 
     package_dict = {
         'title':             metadata.get_descrizione(),
@@ -137,7 +138,7 @@ def create_base_dict(guid, metadata, config):
     extras = {
         'holder_name': 'Provincia Autonoma di Trento',
         'holder_ientifier': 'p_TN',
-        'identifier': str(uuid.uuid4()),
+        'identifier': DEFAULT_IPA + ':' + str(uuid.uuid4()),
         #'themes_aggregate': '[{"subthemes": [], "theme": "{tema}"}]'.format(tema=metadata.get_tema() or "OP_DATPRO"),
         'themes_aggregate': [{"subthemes": [], "theme": metadata.get_tema() or "OP_DATPRO"}],
         'geographical_name': 'ITA_TRT',
