@@ -231,6 +231,7 @@ def create_pro_description(metadata):
     d = _add_field(d, 'Fonte dati Trentino', metadata.get_nsogg_diffon_pro())
     d = _add_field(d, 'Fonte dati nazionali', metadata.get_nsogg_diffon_naz())
     d = _add_field(d, 'Fonte dati internazionali', metadata.get_nsogg_diffon_int())
+    d = _add_field(d, '', metadata.get_elaborazioni())
 
     return d
 
