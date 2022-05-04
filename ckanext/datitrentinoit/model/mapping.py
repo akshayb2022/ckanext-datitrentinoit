@@ -164,11 +164,13 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     :rtype: dict
     """
 
+    DEFAULT_IPA = 'p_TN'
     package_dict, extras = create_base_dict(guid, metadata, config)
 
     extras['Fenomeno'] =  metadata.get_fenomeno()
     extras['Confronti territoriali'] = metadata.get_confronti()
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
+    extras["identifier"] = DEFAULT_IPA + ':' + sha1(f"statistica:{swpentry.get_id()}".encode()).hexdigest()
 
     package_dict['extras'] = _extras_as_dict(extras)
 
