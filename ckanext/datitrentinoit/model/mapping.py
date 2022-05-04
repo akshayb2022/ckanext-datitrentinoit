@@ -163,12 +163,13 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     :rtype: dict
     """
 
+    DEFAULT_IPA = 'p_TN'
     package_dict, extras = create_base_dict(guid, metadata, config)
 
     extras['Fenomeno'] =  metadata.get_fenomeno()
     extras['Confronti territoriali'] = metadata.get_confronti()
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
-    extras["identifier"] = sha1(f"statistica:{swpentry.get_id()}".encode()).hexdigest()
+    extras["identifier"] = DEFAULT_IPA + ':' + sha1(f"statistica:{swpentry.get_id()}".encode()).hexdigest()
 
     package_dict['extras'] = _extras_as_dict(extras)
 
@@ -193,7 +194,6 @@ def create_subpro_package_dict(guid, metadata, config):
     """
 
     orig_id = metadata.get_id()
-    DEFAULT_IPA = 'p_TN'
 
     package_dict, extras = create_base_dict(guid, metadata, config)
 
@@ -211,7 +211,7 @@ def create_subpro_package_dict(guid, metadata, config):
 
     description = create_subpro_description(metadata)
 
-    package_dict['id'] = DEFAULT_IPA + ':' + sha1(f'statistica_subpro:{orig_id}'.encode()).hexdigest(),
+    package_dict['id'] = sha1(f'statistica_subpro:{orig_id}'.encode()).hexdigest(),
     package_dict['url'] = 'http://www.statweb.provincia.tn.it/INDICATORISTRUTTURALISubPro/'
     package_dict['groups'] = groups
     package_dict['notes'] = description
