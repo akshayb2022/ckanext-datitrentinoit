@@ -103,10 +103,18 @@ def create_base_dict(guid, metadata, config):
         return d.isoformat()
 
     start_date = metadata.get_anno_inizio() or '1970'
+    end_date = metadata.get_anno_fine() or '1970'
+
     if len(start_date) < 4:
         log.warn(f"Bad annoinizio found: '{start_date}'")
         start_date = '1970'
+
+    if len(end_date) < 4:
+        log.warn(f"Bad annofine found: '{end_date}'")
+        end_date = '1970'
+
     created = datetime.datetime(int(start_date), 1, 1)
+    ended = datetime.datetime(int(end_date), 12, 31)
 
     last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
     day, month, year = [int(a) for a in last_update.split('/')]
@@ -143,6 +151,7 @@ def create_base_dict(guid, metadata, config):
         'geographical_name': 'ITA_TRT',
         'geographical_geonames_url': 'http://www.geonames.org/3165243',
         'temporal_start': dateformat(created),
+        'temporal_coverage':[{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}],
         ##'frequency': metadata.get_frequenza() or 'UNKNOWN',
         'frequency': 'UNKNOWN',
         'issued': now,
