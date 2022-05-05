@@ -309,6 +309,9 @@ msgstr "Contatto"
 msgid "Origin"
 msgstr "Sito di riferimento"
 
+msgid "Source dataset URL"
+msgstr "URL di origine"
+
 #: ckanext/datitrentinoit/templates/package/snippets/additional_info.html:42
 #: ckanext/datitrentinoit/templates/package/snippets/additional_info.html:47
 msgid "Contact"
