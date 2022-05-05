@@ -171,6 +171,7 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     extras['Confronti territoriali'] = metadata.get_confronti()
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
     extras["identifier"] = DEFAULT_IPA + ':' + sha1(f"statistica:{swpentry.get_id()}".encode()).hexdigest()
+    extras['source_url'] = swpentry.get_url()
 
     package_dict['extras'] = _extras_as_dict(extras)
 
