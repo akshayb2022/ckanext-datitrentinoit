@@ -175,8 +175,6 @@ class StatWebMetadataPro(StatWebMetadata):
     def get_nsogg_diffon_int(self):
         return self.metadata.get('NsoggDiffonInt')
 
-    def get_elaborazioni(self):
-        return 'Elaborazioni a cura di ISPAT'
 
 class StatWebMetadataSubPro(StatWebMetadata):
 

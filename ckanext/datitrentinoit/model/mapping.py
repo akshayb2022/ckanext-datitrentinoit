@@ -219,6 +219,8 @@ def create_subpro_package_dict(guid, metadata, config):
 
 
 def create_pro_description(metadata):
+    DESCRIPTION_END_TEXT = 'Elaborazioni a cura di ISPAT'
+
     d = ''
     d = _add_field(d, 'Area', metadata.get_area())
     d = _add_field(d, 'Settore', metadata.get_settore())
@@ -231,8 +233,7 @@ def create_pro_description(metadata):
     d = _add_field(d, 'Fonte dati Trentino', metadata.get_nsogg_diffon_pro())
     d = _add_field(d, 'Fonte dati nazionali', metadata.get_nsogg_diffon_naz())
     d = _add_field(d, 'Fonte dati internazionali', metadata.get_nsogg_diffon_int())
-    d = _add_field(d, '', metadata.get_elaborazioni())
-
+    d = d + DESCRIPTION_END_TEXT
     return d
 
 
