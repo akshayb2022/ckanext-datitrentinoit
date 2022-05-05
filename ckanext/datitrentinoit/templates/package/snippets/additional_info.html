@@ -37,6 +37,15 @@
           </tr>
         {% endif %}
 
+        {% set source_url = h.get_pkg_dict_extra(pkg_dict, 'source_url') %}
+        {% set source_label = h.get_pkg_dict_extra(pkg_dict, '_harvest_source') or source_url %}
+        {% if source_url %}
+          <tr>
+            <th scope="row" class="dataset-label">{{ _("Source dataset URL") }}</th>
+            <td class="dataset-details">{{ h.link_to(source_label, source_url, target='_blank') }}</td>
+          </tr>
+        {% endif %}
+
       {% endblock %}
     </tbody>
   </table>
