@@ -178,7 +178,7 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     groups = [{'name': groupname}]
 
     package_dict['id'] = sha1(f'statistica:{swpentry.get_id()}'.encode()).hexdigest(),
-    package_dict['url'] = swpentry.get_url()
+    package_dict['url'] = 'http://www.ispat.provincia.tn.it'
     package_dict['groups'] = groups
     package_dict['notes'] = create_pro_description(metadata)
 
