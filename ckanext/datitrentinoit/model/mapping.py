@@ -136,7 +136,7 @@ def create_base_dict(guid, metadata, config):
 
     extras = {
         'holder_name': 'Provincia Autonoma di Trento',
-        'holder_ientifier': 'p_TN',
+        'holder_identifier': 'p_TN',
         'identifier': str(uuid.uuid4()),
         #'themes_aggregate': '[{"subthemes": [], "theme": "{tema}"}]'.format(tema=metadata.get_tema() or "OP_DATPRO"),
         'themes_aggregate': [{"subthemes": [], "theme": metadata.get_tema() or "OP_DATPRO"}],
