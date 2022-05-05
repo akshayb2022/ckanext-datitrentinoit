@@ -144,7 +144,7 @@ def create_base_dict(guid, metadata, config):
 
     extras = {
         'holder_name': 'Provincia Autonoma di Trento',
-        'holder_ientifier': 'p_TN',
+        'holder_identifier': 'p_TN',
         'identifier': str(uuid.uuid4()),
         #'themes_aggregate': '[{"subthemes": [], "theme": "{tema}"}]'.format(tema=metadata.get_tema() or "OP_DATPRO"),
         'themes_aggregate': [{"subthemes": [], "theme": metadata.get_tema() or "OP_DATPRO"}],
@@ -173,11 +173,14 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     :rtype: dict
     """
 
+    DEFAULT_IPA = 'p_TN'
     package_dict, extras = create_base_dict(guid, metadata, config)
 
     extras['Fenomeno'] =  metadata.get_fenomeno()
     extras['Confronti territoriali'] = metadata.get_confronti()
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
+    extras["identifier"] = f'{DEFAULT_IPA}:ispat_{swpentry.get_id()}'
+    extras['source_url'] = swpentry.get_url()
 
     package_dict['extras'] = _extras_as_dict(extras)
 
@@ -185,7 +188,7 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     groups = [{'name': groupname}]
 
     package_dict['id'] = sha1(f'statistica:{swpentry.get_id()}'.encode()).hexdigest(),
-    package_dict['url'] = swpentry.get_url()
+    package_dict['url'] = 'http://www.ispat.provincia.tn.it'
     package_dict['groups'] = groups
     package_dict['notes'] = create_pro_description(metadata)
 
@@ -228,6 +231,8 @@ def create_subpro_package_dict(guid, metadata, config):
 
 
 def create_pro_description(metadata):
+    DESCRIPTION_END_TEXT = 'Elaborazioni a cura di ISPAT'
+
     d = ''
     d = _add_field(d, 'Area', metadata.get_area())
     d = _add_field(d, 'Settore', metadata.get_settore())
@@ -240,8 +245,7 @@ def create_pro_description(metadata):
     d = _add_field(d, 'Fonte dati Trentino', metadata.get_nsogg_diffon_pro())
     d = _add_field(d, 'Fonte dati nazionali', metadata.get_nsogg_diffon_naz())
     d = _add_field(d, 'Fonte dati internazionali', metadata.get_nsogg_diffon_int())
-    d = _add_field(d, '', metadata.get_elaborazioni())
-
+    d = d + DESCRIPTION_END_TEXT
     return d
 
 
