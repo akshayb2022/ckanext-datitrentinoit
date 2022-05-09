@@ -104,7 +104,7 @@ def create_base_dict(guid, metadata, config):
     start_date = metadata.get_anno_inizio()
     end_date = metadata.get_anno_fine()
 
-    created = datetime.date(int(start_date), 1, 1) if start_date else ''
+    created = datetime.date(int(start_date), 1, 1) if start_date else '1970'
     ended = datetime.date(int(end_date), 12, 31) if end_date else ''
 
     last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
@@ -152,18 +152,10 @@ def create_base_dict(guid, metadata, config):
         'Measurement unit':  metadata.get_um(),
     }
 
-    if start_date and end_date:
-        extras.update({
-            'temporal_coverage':[{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}]
-        })
-    elif start_date and not end_date:
-        extras.update({
-            'temporal_coverage':[{'temporal_start': dateformat(created)}],
-        })
-    elif end_date and not start_date:
-        extras.update({
-            'temporal_coverage':[{'temporal_end': dateformat(ended)}],
-        })
+    if start_date:
+        extras['temporal_coverage'] = [{'temporal_start': dateformat(created)}]
+    elif start_date and end_date:
+        extras['temporal_coverage'] = [{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}]
 
     return package_dict, extras
 
