@@ -176,8 +176,6 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     }]
     extras["identifier"] = f'{DEFAULT_IPA}:ispat_{swpentry.get_id()}'
     extras['source_url'] = swpentry.get_url()
-    extras['publisher_name'] =  "ISPAT Istituto di statistica della provincia di Trento"
-    extras['publisher_identifier'] =  "XGT4IE"
 
     package_dict['extras'] = _extras_as_dict(extras)
 
