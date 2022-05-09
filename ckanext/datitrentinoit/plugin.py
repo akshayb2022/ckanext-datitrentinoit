@@ -60,6 +60,56 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
                 'is_required': False,
                 'localized': True,
                 'ignore_from_info': True
+            },
+            {
+                'name': 'contact_point_name',
+                'validator': ['ignore_missing'],
+                'element': 'input',
+                'type': 'text',
+                'label': _('contact point'),
+                'placeholder': _('Editor contact point help'),
+                'is_required': False,
+                'help': _('Editor contact point info'),
+                'in_tab': True,
+            },
+            {
+                'name': 'contact_point_identifier',
+                'validator': ['ignore_missing'],
+                'element': 'input',
+                'type': 'text',
+                'label': _('contact point identifier'),
+                'placeholder': _('contact point identifier'),
+                'is_required': False,
+                'help': _('Editor contact point info'),
+                'in_tab': True,
+            },
+            {
+                'name': 'contact_point',
+                'validator': ['ignore_missing'],
+                'element': 'input',
+                'type': 'text',
+                'label': _('Contact point'),
+                'placeholder': _('Contact point'),
+                'is_required': False,
+                'help': _('Contact point'),
+                'in_tab': True,
+                '_couples': [
+                    {
+                        'name': 'contact_point_name',
+                        'label': _('Name'),
+                        'validator': ['ignore_missing'],
+                        'type': 'text',
+                        'placeholder': _('creator of the dataset'),
+                        'localized': True
+                    },
+                    {
+                        'name': 'contact_point_identifier',
+                        'label': _('IPA/IVA'),
+                        'validator': ['ignore_missing'],
+                        'type': 'text',
+                        'placeholder': _('creator of the dataset')
+                    }
+                ],
             }
         ]
 
