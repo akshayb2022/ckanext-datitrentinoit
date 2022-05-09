@@ -165,6 +165,8 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     """
 
     DEFAULT_IPA = 'p_TN'
+    NAME = "ISPAT Istituto di statistica della provincia di Trento"
+    IDENTIFIER = "XGT4IE"
     package_dict, extras = create_base_dict(guid, metadata, config)
 
     extras['Fenomeno'] =  metadata.get_fenomeno()
@@ -173,14 +175,12 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     extras["identifier"] = f'{DEFAULT_IPA}:ispat_{swpentry.get_id()}'
     extras['source_url'] = swpentry.get_url()
     extras['creator'] = [{
-        "creator_identifier": "XGT4IE",
-        "creator_name": "ISPAT Istituto di statistica della provincia di Trento"
+        "creator_identifier": IDENTIFIER,
+        "creator_name": NAME
     }]
-    extras['contact_point_name'] = "XGT4IE"
-    extras['contact_point_identifier'] = "ISPAT Istituto di statistica della provincia di Trento"
     extras['contact_point'] = [{
-        "contact_point_identifier": "XGT4IE",
-        "contact_point_name": "ISPAT Istituto di statistica della provincia di Trento"
+        "contact_point_identifier": IDENTIFIER,
+        "contact_point_name": NAME
     }]
 
     package_dict['extras'] = _extras_as_dict(extras)

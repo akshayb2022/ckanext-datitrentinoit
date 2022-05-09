@@ -23,10 +23,6 @@ class DatitrentinoitProfile(RDFProfile):
         return dataset_dict
 
     def graph_from_dataset(self, dataset_dict, dataset_ref):
-        self._replace_poc_with_publisher(dataset_dict, dataset_ref)
-        self._augment_publisher_info(dataset_dict, dataset_ref)
-    
-    def _replace_poc_with_publisher(self, dataset_dict, dataset_ref):
         g = self.g
         org_dict = _get_org(dataset_dict.get('owner_org'))
 
@@ -37,8 +33,6 @@ class DatitrentinoitProfile(RDFProfile):
             remove_unused_object(g, o, "contactPoint (UMBRIA)")
 
         # Add new poc
-        pub_name = dataset_dict.get('contact_point_name')
-        pub_identifier = dataset_dict.get('contact_point_identifier')
         create_point = dataset_dict.get('contact_point')
 
         poc = BNode()
@@ -47,21 +41,8 @@ class DatitrentinoitProfile(RDFProfile):
         g.add((poc, RDF.type, VCARD.Kind))
         g.add((poc, RDF.type, VCARD.Organization))
 
-        g.add((poc, VCARD.fn, Literal(pub_name if pub_name else org_dict.get('contact_point_name'))))
-        g.add((poc, VCARD.fn, Literal(pub_identifier if pub_identifier else org_dict.get('contact_point_identifier'))))
         g.add((poc, VCARD.fn, Literal(create_point if create_point else org_dict.get('create_point'))))
         
-    def _augment_publisher_info(self, dataset_dict, dataset_ref):
-        publisher = self.g.value(subject=dataset_ref, predicate=DCT.publisher, object=None, any=False)
-
-        if publisher:
-            for key, predicate, otype in (
-                    ('contact_point_name', FOAF.mbox, Literal),
-                    ('contact_point_identifier', FOAF.homepage, URIRef),
-                    ('contact_point', FOAF.mbox, Literal)
-            ):
-                self.g.add((publisher, predicate, otype(self._get_dict_value(dataset_dict, key, 'N/A'))))
-
 
 def _get_org(org_id):
     org_dict = {}

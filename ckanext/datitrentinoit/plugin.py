@@ -62,28 +62,6 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
                 'ignore_from_info': True
             },
             {
-                'name': 'contact_point_name',
-                'validator': ['ignore_missing'],
-                'element': 'input',
-                'type': 'text',
-                'label': _('contact point'),
-                'placeholder': _('Editor contact point help'),
-                'is_required': False,
-                'help': _('Editor contact point info'),
-                'in_tab': True,
-            },
-            {
-                'name': 'contact_point_identifier',
-                'validator': ['ignore_missing'],
-                'element': 'input',
-                'type': 'text',
-                'label': _('contact point identifier'),
-                'placeholder': _('contact point identifier'),
-                'is_required': False,
-                'help': _('Editor contact point info'),
-                'in_tab': True,
-            },
-            {
                 'name': 'contact_point',
                 'validator': ['ignore_missing'],
                 'element': 'input',
