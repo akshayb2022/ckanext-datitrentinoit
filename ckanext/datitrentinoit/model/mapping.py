@@ -172,6 +172,7 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
     extras["identifier"] = f'{DEFAULT_IPA}:ispat_{swpentry.get_id()}'
     extras['source_url'] = swpentry.get_url()
+    extras['language'] = 'ITA'
 
     package_dict['extras'] = _extras_as_dict(extras)
 
