@@ -100,21 +100,12 @@ def create_base_dict(guid, metadata, config):
 
     def dateformat(d):
         return d.strftime(r"%Y-%m-%d")
-        return d.isoformat()
 
-    start_date = metadata.get_anno_inizio() or '1970'
-    end_date = metadata.get_anno_fine() or '1970'
+    start_date = metadata.get_anno_inizio()
+    end_date = metadata.get_anno_fine()
 
-    if len(start_date) < 4:
-        log.warn(f"Bad annoinizio found: '{start_date}'")
-        start_date = '1970'
-
-    if len(end_date) < 4:
-        log.warn(f"Bad annofine found: '{end_date}'")
-        end_date = '1970'
-
-    created = datetime.datetime(int(start_date), 1, 1)
-    ended = datetime.datetime(int(end_date), 12, 31)
+    created = datetime.date(int(start_date), 1, 1) if start_date else ''
+    ended = datetime.date(int(end_date), 12, 31) if end_date else ''
 
     last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
     day, month, year = [int(a) for a in last_update.split('/')]
@@ -151,7 +142,6 @@ def create_base_dict(guid, metadata, config):
         'geographical_name': 'ITA_TRT',
         'geographical_geonames_url': 'http://www.geonames.org/3165243',
         'temporal_start': dateformat(created),
-        'temporal_coverage':[{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}],
         ##'frequency': metadata.get_frequenza() or 'UNKNOWN',
         'frequency': 'UNKNOWN',
         'issued': now,
@@ -161,6 +151,19 @@ def create_base_dict(guid, metadata, config):
         'Anno di inizio':    metadata.get_anno_inizio(),
         'Measurement unit':  metadata.get_um(),
     }
+
+    if start_date and end_date:
+        extras.update({
+            'temporal_coverage':[{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}]
+        })
+    elif start_date and not end_date:
+        extras.update({
+            'temporal_coverage':[{'temporal_start': dateformat(created)}],
+        })
+    elif end_date and not start_date:
+        extras.update({
+            'temporal_coverage':[{'temporal_end': dateformat(ended)}],
+        })
 
     return package_dict, extras
 
