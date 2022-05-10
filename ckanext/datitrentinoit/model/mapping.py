@@ -156,9 +156,9 @@ def create_base_dict(guid, metadata, config):
         'Measurement unit':  metadata.get_um(),
     }
 
-    if start_date:
-        extras['temporal_coverage'] = [{'temporal_start': dateformat(created)}]
-    elif start_date and end_date:
+    extras['temporal_coverage'] = [{'temporal_start': dateformat(created)}]
+
+    if end_date:
         extras['temporal_coverage'] = [{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}]
 
     return package_dict, extras
