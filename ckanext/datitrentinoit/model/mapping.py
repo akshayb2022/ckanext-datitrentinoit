@@ -101,10 +101,14 @@ def create_base_dict(guid, metadata, config):
     def dateformat(d):
         return d.strftime(r"%Y-%m-%d")
 
-    start_date = metadata.get_anno_inizio()
-    end_date = metadata.get_anno_fine()
+    start_date = metadata.get_anno_inizio() or '1970'
+    if len(start_date) < 4:
+        log.warn(f"Bad annoinizio found: '{start_date}'")
+        start_date = '1970'
 
-    created = datetime.date(int(start_date), 1, 1) if start_date else '1970'
+    created = datetime.datetime(int(start_date), 1, 1)
+
+    end_date = metadata.get_anno_fine()
     ended = datetime.date(int(end_date), 12, 31) if end_date else ''
 
     last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
