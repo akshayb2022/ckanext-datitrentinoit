@@ -173,8 +173,10 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     extras['Confronti territoriali'] = metadata.get_confronti()
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
     extras['creator'] = [{
+        "creator_name": {
+            "it": NAME
+        },
         "creator_identifier": IDENTIFIER,
-        "creator_name": NAME
     }]
     extras['publisher_name'] =  NAME
     extras['publisher_identifier'] =  IDENTIFIER
