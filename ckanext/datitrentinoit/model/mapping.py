@@ -105,11 +105,7 @@ def create_base_dict(guid, metadata, config):
     if len(start_date) < 4:
         log.warn(f"Bad annoinizio found: '{start_date}'")
         start_date = '1970'
-
     created = datetime.datetime(int(start_date), 1, 1)
-
-    end_date = metadata.get_anno_fine()
-    ended = datetime.date(int(end_date), 12, 31) if end_date else ''
 
     last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
     day, month, year = [int(a) for a in last_update.split('/')]
@@ -156,11 +152,12 @@ def create_base_dict(guid, metadata, config):
         'Measurement unit':  metadata.get_um(),
     }
 
-    extras['temporal_coverage'] = [{'temporal_start': dateformat(created)}]
-
-    if end_date:
-        extras['temporal_coverage'] = [{'temporal_start': dateformat(created),'temporal_end': dateformat(ended)}]
-
+    if metadata.get_anno_inizio():
+        interval = {'temporal_start': dateformat(created)}
+        if metadata.get_anno_fine():
+            interval['temporal_end'] = dateformat(datetime.date(int(metadata.get_anno_fine()), 12, 31))
+        extras['temporal_coverage'] = [interval]
+    
     return package_dict, extras
 
 
