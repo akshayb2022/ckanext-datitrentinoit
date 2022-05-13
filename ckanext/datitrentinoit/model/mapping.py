@@ -104,7 +104,6 @@ def create_base_dict(guid, metadata, config):
 
     def dateformat(d):
         return d.strftime(r"%Y-%m-%d")
-        return d.isoformat()
 
     start_date = metadata.get_anno_inizio() or '1970'
     if len(start_date) < 4:
@@ -157,6 +156,12 @@ def create_base_dict(guid, metadata, config):
         'Measurement unit':  metadata.get_um(),
     }
 
+    if metadata.get_anno_inizio():
+        interval = {'temporal_start': dateformat(created)}
+        if metadata.get_anno_fine():
+            interval['temporal_end'] = dateformat(datetime.date(int(metadata.get_anno_fine()), 12, 31))
+        extras['temporal_coverage'] = [interval]
+    
     return package_dict, extras
 
 
