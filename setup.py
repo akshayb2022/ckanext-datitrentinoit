@@ -48,6 +48,7 @@ setup(
         datitrentinoit = ckanext.datitrentinoit.plugin:DatiTrentinoPlugin
         statwebpro_harvester=ckanext.datitrentinoit.harvesters.statwebpro:StatWebProHarvester
         statwebsubpro_harvester=ckanext.datitrentinoit.harvesters.statwebsubpro:StatWebSubProHarvester
+        opencity_harvester=ckanext.datitrentinoit.harvesters.opencity:OpenCityHarvester
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
