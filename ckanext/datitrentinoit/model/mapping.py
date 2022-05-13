@@ -13,6 +13,10 @@ from ckanext.datitrentinoit.model.statweb_metadata import StatWebMetadataPro, St
 
 log = logging.getLogger(__name__)
 
+TRENTO_IPA = 'p_TN'
+ISPAT_NAME = "ISPAT Istituto di statistica della provincia di Trento"
+ISPAT_CODE = "XGT4IE"
+
 tags_remove = [
     'rdnt', 'siat', 'pup', 'db prior 10k', 'pup; rndt',
     'inquadramenti di base', 'suap', 'scritte', 'pupagri', 'pupasc', 'pupbos',
@@ -100,7 +104,6 @@ def create_base_dict(guid, metadata, config):
 
     def dateformat(d):
         return d.strftime(r"%Y-%m-%d")
-        return d.isoformat()
 
     start_date = metadata.get_anno_inizio() or '1970'
     if len(start_date) < 4:
@@ -153,6 +156,12 @@ def create_base_dict(guid, metadata, config):
         'Measurement unit':  metadata.get_um(),
     }
 
+    if metadata.get_anno_inizio():
+        interval = {'temporal_start': dateformat(created)}
+        if metadata.get_anno_fine():
+            interval['temporal_end'] = dateformat(datetime.date(int(metadata.get_anno_fine()), 12, 31))
+        extras['temporal_coverage'] = [interval]
+    
     return package_dict, extras
 
 
@@ -164,28 +173,28 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     :rtype: dict
     """
 
-    DEFAULT_IPA = 'p_TN'
-    NAME = "ISPAT Istituto di statistica della provincia di Trento"
-    IDENTIFIER = "XGT4IE"
     package_dict, extras = create_base_dict(guid, metadata, config)
 
-    extras['Fenomeno'] =  metadata.get_fenomeno()
-    extras['Confronti territoriali'] = metadata.get_confronti()
-    extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
-    extras['publisher_name'] =  "ISPAT Istituto di statistica della provincia di Trento"
-    extras['publisher_identifier'] =  "XGT4IE"
-    extras["identifier"] = f'{DEFAULT_IPA}:ispat_{swpentry.get_id()}'
-    extras['source_url'] = swpentry.get_url()
+    # DCATAPIT extras
+    extras["identifier"] = f'{TRENTO_IPA}:ispat_{swpentry.get_id()}'
+    extras['language'] = 'ITA'    
+    extras['publisher_name'] =  ISPAT_NAME
+    extras['publisher_identifier'] =  ISPAT_CODE
     extras['creator'] = [{
-        "creator_identifier": IDENTIFIER,
-        "creator_name": NAME
+        "creator_name": { l:ISPAT_NAME for l in ('it','de','fr','en',) },
+        "creator_identifier": ISPAT_CODE,
     }]
     extras['contact_point'] = [{
         "contact_point_identifier": IDENTIFIER,
         "contact_point_name": NAME
     }]
-    extras['language'] = 'ITA'
-
+    
+    # ISPAT extras
+    extras['Fenomeno'] =  metadata.get_fenomeno()
+    extras['Confronti territoriali'] = metadata.get_confronti()
+    # Other info extras
+    extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
+    extras['source_url'] = swpentry.get_url()
     package_dict['extras'] = _extras_as_dict(extras)
 
     groupname = cat_map_pro.get((metadata.get_settore() or 'default').lower(), DEFAULT_GROUP_PRO)
