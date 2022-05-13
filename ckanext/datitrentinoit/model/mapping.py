@@ -16,6 +16,8 @@ log = logging.getLogger(__name__)
 TRENTO_IPA = 'p_TN'
 ISPAT_NAME = "ISPAT Istituto di statistica della provincia di Trento"
 ISPAT_CODE = "XGT4IE"
+ISPAT_BASE_URL = 'http://www.ispat.provincia.tn.it'
+ISPAT_MAIL = 'ispat@provincia.tn.it'
 
 tags_remove = [
     'rdnt', 'siat', 'pup', 'db prior 10k', 'pup; rndt',
@@ -177,11 +179,17 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
 
     # DCATAPIT extras
     extras["identifier"] = f'{TRENTO_IPA}:ispat_{swpentry.get_id()}'
+    extras['language'] = 'ITA'    
     extras['publisher_name'] =  ISPAT_NAME
     extras['publisher_identifier'] =  ISPAT_CODE
     extras['creator'] = [{
         "creator_name": { l:ISPAT_NAME for l in ('it','de','fr','en',) },
         "creator_identifier": ISPAT_CODE,
+    }]
+    extras['contact_point'] = [{
+        "contact_point_name": ISPAT_NAME,
+        "contact_point_identifier": ISPAT_CODE,
+        "contact_point_email": ISPAT_MAIL,
     }]
     # ISPAT extras
     extras['Fenomeno'] =  metadata.get_fenomeno()
@@ -189,15 +197,13 @@ def create_pro_package_dict(guid, swpentry: StatWebProEntry, metadata: StatWebMe
     # Other info extras
     extras['_harvest_source'] = 'statistica:' + swpentry.get_id()
     extras['source_url'] = swpentry.get_url()
-    extras['language'] = 'ITA'
-
     package_dict['extras'] = _extras_as_dict(extras)
 
     groupname = cat_map_pro.get((metadata.get_settore() or 'default').lower(), DEFAULT_GROUP_PRO)
     groups = [{'name': groupname}]
 
     package_dict['id'] = sha1(f'statistica:{swpentry.get_id()}'.encode()).hexdigest(),
-    package_dict['url'] = 'http://www.ispat.provincia.tn.it'
+    package_dict['url'] = ISPAT_BASE_URL
     package_dict['groups'] = groups
     package_dict['notes'] = create_pro_description(metadata)
 

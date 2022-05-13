@@ -60,6 +60,35 @@ class DatiTrentinoPlugin(plugins.SingletonPlugin, DefaultTranslation):
                 'is_required': False,
                 'localized': True,
                 'ignore_from_info': True
+            },
+            {
+                'name': 'contact_point',
+                'validator': ['ignore_missing'],
+                'element': 'input',
+                'type': 'text',
+                'label': _('Contact point'),
+                'placeholder': _('Contact point'),
+                'is_required': False,
+                'help': _('Contact point'),
+                'in_tab': True,  # avoid to be displayed automatically in edit tabs
+                'ignore_from_info': True,  # avoid to be displayed automatically in show page
+                '_couples': [
+                    {
+                        'name': 'contact_point_name',
+                        'label': _('Name'),
+                        'validator': ['ignore_missing'],
+                        'type': 'text',
+                        'placeholder': _('creator of the dataset'),
+                        'localized': True
+                    },
+                    {
+                        'name': 'contact_point_identifier',
+                        'label': _('IPA/IVA'),
+                        'validator': ['ignore_missing'],
+                        'type': 'text',
+                        'placeholder': _('creator of the dataset')
+                    }
+                ],
             }
         ]
 

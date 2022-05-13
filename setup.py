@@ -49,6 +49,9 @@ setup(
         statwebpro_harvester=ckanext.datitrentinoit.harvesters.statwebpro:StatWebProHarvester
         statwebsubpro_harvester=ckanext.datitrentinoit.harvesters.statwebsubpro:StatWebSubProHarvester
 
+        [ckan.rdf.profiles]
+        datitrentinoit_ap=ckanext.datitrentinoit.profile:DatitrentinoitProfile
+
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
     ''',
