@@ -6,6 +6,8 @@ import datetime
 import uuid
 from hashlib import sha1
 
+from ckanext.dcatapit.commands.vocabulary import FREQUENCIES_THEME_NAME
+from ckanext.dcatapit.helpers import get_vocabulary_items
 from ckanext.dcatapit.model import License
 
 from ckanext.datitrentinoit.model.statweb_metadata import StatWebMetadataPro, StatWebMetadataSubPro, StatWebProEntry
@@ -122,6 +124,15 @@ def create_base_dict(guid, metadata, config):
     lic_search = f'%({metadata.get_licenza()})'
     license = License.q().filter(License.default_name.like(lic_search)).first() or License.get(License.DEFAULT_LICENSE)
 
+    try:
+        freq = _parse_freq(metadata.get_frequenza().lower())
+        if not freq:
+            log.warning(f'Could not parse frequency "{metadata.get_frequenza()}"')
+            freq = 'UNKNOWN'
+    except Exception as e:
+        log.warning(f'Error handling frequency "{metadata.get_frequenza()}": {e}')
+        freq = 'UNKNOWN'
+
     package_dict = {
         'title':             metadata.get_descrizione(),
         'groups':            config.get('groups', [{'name': 'statistica'}]),
@@ -148,8 +159,7 @@ def create_base_dict(guid, metadata, config):
         'geographical_name': 'ITA_TRT',
         'geographical_geonames_url': 'http://www.geonames.org/3165243',
         'temporal_start': dateformat(created),
-        ##'frequency': metadata.get_frequenza() or 'UNKNOWN',
-        'frequency': 'UNKNOWN',
+        'frequency': freq,
         'issued': now,
         'modified': dateformat(updated),
         'encoding': 'UTF-8',
@@ -290,3 +300,23 @@ def _extras_as_dict(extras):
             extras_as_dict.append({'key': key, 'value': value})
 
     return extras_as_dict
+
+
+_CACHED_FREQS = None
+def _get_freqs():
+    '''
+    :return: the vocabulary frequancies as a dict "lowercase italian label": "tag key"
+    '''
+    global _CACHED_FREQS
+    if _CACHED_FREQS is None:
+        log.info('Initializing Frequencies mapping')
+        voc_items = get_vocabulary_items(vocabulary_name=FREQUENCIES_THEME_NAME, lang='it')
+
+        _CACHED_FREQS = {t['text'].lower():t['value'] for t in voc_items }
+        log.warning(f"Cached frequencies: {_CACHED_FREQS}")
+
+    return _CACHED_FREQS
+
+
+def _parse_freq(freq):
+    return _get_freqs().get(freq, None)
