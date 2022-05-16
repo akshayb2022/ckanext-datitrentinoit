@@ -115,9 +115,7 @@ def create_base_dict(guid, metadata, config):
         start_date = '1970'
     created = datetime.datetime(int(start_date), 1, 1)
 
-    last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
-    day, month, year = [int(a) for a in last_update.split('/')]
-    updated = datetime.datetime(year, month, day)
+    updated = parse_ultimo_aggiornamento(metadata)
 
     now = dateformat(datetime.datetime.now())
 
@@ -300,6 +298,12 @@ def _extras_as_dict(extras):
             extras_as_dict.append({'key': key, 'value': value})
 
     return extras_as_dict
+
+
+def parse_ultimo_aggiornamento(metadata):
+    last_update = metadata.get_ultimo_aggiornamento() or "01/01/1970"
+    day, month, year = [int(a) for a in last_update.split('/')]
+    return datetime.datetime(year, month, day)
 
 
 _CACHED_FREQS = None
