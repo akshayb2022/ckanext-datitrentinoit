@@ -23,32 +23,31 @@ This extension requires the following extensions: ``ckanext-harvester``, ``ckane
 
 2. Activate your CKAN virtual environment, for example:
 
-     `. /usr/lib/ckan/default/bin/activate`
-     
+       . /usr/lib/ckan/default/bin/activate
+
 3. Go into your CKAN path for extension (like /usr/lib/ckan/default/src):
 
-    `git clone https://github.com/geosolutions-it/ckanext-datitrentinoit.git`
-    
-    `cd ckanext-datitrentinoit`
-    
-    `pip install -e .`
+       git clone https://github.com/geosolutions-it/ckanext-datitrentinoit.git 
+       cd ckanext-datitrentinoit 
+       pip install -e .
 
 4. Add ``datitrentinoit``, ``statwebpro_harvester`` and ``statwebsubpro_harvester``  to the ``ckan.plugins`` setting in your CKAN config file (by default the config file is located at ``/etc/ckan/default/production.ini``).
 
-5. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
+5. Add ``datitrentinoit_ap`` to the `ckanext.dcat.rdf.profiles` setting, so that it reads: 
 
-     sudo service apache2 reload
+       ckanext.dcat.rdf.profiles = euro_dcat_ap it_dcat_ap datitrentinoit_ap
+
+7. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
+
+       sudo service apache2 reload
 
 ## Development Installation
 
 To install `ckanext-datitrentinoit` for development, activate your CKAN virtualenv and do:
 
     git clone https://github.com/geosolutions-it/ckanext-datitrentinoit.git
-    
     cd ckanext-datitrentinoit
-    
     python setup.py develop
-
     pip install -r dev-requirements.txt
 
 ## CSW Harvest Configuration
