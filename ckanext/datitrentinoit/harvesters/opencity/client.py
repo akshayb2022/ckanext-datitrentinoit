@@ -18,7 +18,7 @@ class OpenCityClient(object):
         url = f"{self.baseurl}" + "?limit=" + DATASET_LIMIT
 
         while True:
-            log.debug("Retrieving at GeoNode URL %s", url)
+            log.debug("Retrieving at OpenCity URL %s", url)
             response = urlopen(url).read()
             json_content = json.loads(response)
 

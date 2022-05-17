@@ -198,7 +198,7 @@ class OpenCityHarvester(HarvesterBase, SingletonPlugin):
 
         # Let's set the metadata date according to the import time. Not the best choice, since
         # we'd like to set the original metadata date.
-        # If geonode provided this info, we could rely on this to find out if a dataset needs to be updated.
+        # If opencity provided this info, we could rely on this to find out if a dataset needs to be updated.
         harvest_object.metadata_modified_date = datetime.now()
         harvest_object.add()
 
