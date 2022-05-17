@@ -48,7 +48,7 @@ setup(
         datitrentinoit = ckanext.datitrentinoit.plugin:DatiTrentinoPlugin
         statwebpro_harvester=ckanext.datitrentinoit.harvesters.statwebpro:StatWebProHarvester
         statwebsubpro_harvester=ckanext.datitrentinoit.harvesters.statwebsubpro:StatWebSubProHarvester
-        opencity_harvester=ckanext.datitrentinoit.harvesters.opencity:OpenCityHarvester
+        opencity_harvester=ckanext.datitrentinoit.harvesters.opencity.opencity:OpenCityHarvester
 
         [ckan.rdf.profiles]
         datitrentinoit_ap=ckanext.datitrentinoit.profile:DatitrentinoitProfile

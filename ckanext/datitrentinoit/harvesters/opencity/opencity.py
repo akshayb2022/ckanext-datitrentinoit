@@ -9,12 +9,10 @@ from datetime import datetime
 from ckan import logic
 from ckan.lib.navl.validators import not_empty
 
-from ckanext.datitrentinoit.harvesters.client import OpenCityClient
-from ckanext.datitrentinoit.model.mapping import (
-    create_opencity_package_dict,
-    _extras_as_dict,
-)
+from ckanext.datitrentinoit.harvesters.opencity.client import OpenCityClient
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra as HOExtra
+
+from ckanext.datitrentinoit.harvesters.opencity.mapping import create_opencity_package_dict, addExtras
 from ckan.plugins.core import SingletonPlugin, implements
 from ckanext.harvest.interfaces import IHarvester
 from ckanext.harvest.model import HarvestObject
@@ -299,6 +297,7 @@ class OpenCityHarvester(HarvesterBase, SingletonPlugin):
 
                 package_dict["id"] = harvest_object.package_id
                 try:
+                    # package_id = p.toolkit.get_action('package_update')(context, package_dict)
                     package_id = self._update_package(
                         context, package_dict, harvest_object
                     )
@@ -328,10 +327,8 @@ class OpenCityHarvester(HarvesterBase, SingletonPlugin):
 
         # We need to get the owner organization (if any) from the harvest source dataset
         source_dataset = model.Package.get(harvest_object.source.id)
-
         if source_dataset.owner_org:
             package_dict["owner_org"] = source_dataset.owner_org
-
         package_id = p.toolkit.get_action("package_create")(context, package_dict)
         return package_id
 
@@ -339,7 +336,7 @@ class OpenCityHarvester(HarvesterBase, SingletonPlugin):
         package_dict, extras = create_opencity_package_dict(
             harvest_object, self.source_config
         )
-        package_dict = _extras_as_dict(package_dict, extras)
+        package_dict = addExtras(package_dict, extras)
         return package_dict
 
     def _get_object_extra(self, harvest_object, key):

@@ -4,7 +4,7 @@ import logging
 
 from urllib.request import urlopen
 
-from ckanext.datitrentinoit.harvesters import DATASET_LIMIT
+from ckanext.datitrentinoit.harvesters.opencity import DATASET_LIMIT
 
 log = logging.getLogger(__name__)
 
