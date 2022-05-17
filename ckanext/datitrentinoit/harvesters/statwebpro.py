@@ -6,6 +6,7 @@ import urllib.request as r
 from urllib.parse import urlparse, urlunparse
 
 from ckan.plugins.core import SingletonPlugin
+from ckanext.datitrentinoit.model.mapping import parse_ultimo_aggiornamento
 
 from ckanext.datitrentinoit.model.statweb_metadata import StatWebProIndex, StatWebProEntry, StatWebMetadataPro, \
     _safe_decode
@@ -120,6 +121,8 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
 
     def attach_resources(self, metadata, package_dict, harvest_object):
 
+        last_modified = parse_ultimo_aggiornamento(metadata)
+
         for resource_key in ["Indicatore", "TabNumeratore", "TabDenominatore"]:
             json_resource_url = metadata.get(resource_key)
             if not json_resource_url:
@@ -147,7 +150,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'format': 'json',
                 'mimetype': 'application/json',
                 'resource_type': 'api',
-                # 'last_modified': modified,
+                'last_modified': last_modified,
                 'distribution_format': 'JSON',  # dcatapit
                 'license_type': package_dict['license_url'],  # dcatapit
             }
@@ -165,7 +168,7 @@ class StatWebProHarvester(StatWebBaseHarvester, SingletonPlugin):
                 'format': 'csv',
                 'mimetype': 'text/csv',
                 'resource_type': 'file',
-                # 'last_modified': modified,
+                'last_modified': last_modified,
                 'distribution_format': 'CSV',  # dcatapit
                 'license_type': package_dict['license_url'],  # dcatapit
             }

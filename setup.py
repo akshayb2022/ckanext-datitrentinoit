@@ -50,6 +50,9 @@ setup(
         statwebsubpro_harvester=ckanext.datitrentinoit.harvesters.statwebsubpro:StatWebSubProHarvester
         opencity_harvester=ckanext.datitrentinoit.harvesters.opencity:OpenCityHarvester
 
+        [ckan.rdf.profiles]
+        datitrentinoit_ap=ckanext.datitrentinoit.profile:DatitrentinoitProfile
+
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
     ''',

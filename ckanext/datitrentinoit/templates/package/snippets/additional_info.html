@@ -8,9 +8,19 @@
     <tbody>
       {% block package_additional_info %}
 
-        {% if pkg_dict.author_email %}
+        {% set infotn_contact_list = (h.load_json_or_list(pkg_dict.contact_point) or []) %}
+        {% if infotn_contact_list %}
+              {% for poc in infotn_contact_list %}
+                <tr>
+                  <th scope="row" class="dataset-label">{{ _("Contact") }}</th>
+                  <td class="dataset-details" property="dc:creator">{{ h.mail_to(
+                        email_address=poc.contact_point_email,
+                        name=poc.contact_point_name) }}</td>
+                </tr>
+              {% endfor %}
+        {% elif pkg_dict.author_email %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _("Author") }}</th>
+            <th scope="row" class="dataset-label">{{ _("Contact") }}</th>
             <td class="dataset-details" property="dc:creator">{{ h.mail_to(email_address=pkg_dict.author_email, name=pkg_dict.author) }}</td>
           </tr>
         {% elif pkg_dict.author %}
@@ -28,7 +38,7 @@
         {% if pkg_dict.url %}
           <tr>
             <th scope="row" class="dataset-label">{{ _("Origin") }}</th>
-            <td class="dataset-details" property="dc:creator">{{ h.link_to(pkg_dict.url , pkg_dict.url, rel='foaf:homepage', target='_blank') }}</td>
+            <td class="dataset-details">{{ h.link_to(pkg_dict.url , pkg_dict.url, rel='foaf:homepage', target='_blank') }}</td>
           </tr>
         {% else %}
           <tr>
